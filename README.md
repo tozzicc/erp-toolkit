@@ -8,6 +8,7 @@ ERP Toolkit e um conjunto de ferramentas para apoiar rotinas tecnicas de ERP, co
 frontend/  Aplicacao web em React, TypeScript, Vite e Tailwind CSS
 backend/   API em Python, FastAPI e SQLite
 docs/      Documentacao do projeto
+.ai/      Documentacao oficial de contexto para IAs
 ```
 
 ## Requisitos
@@ -75,3 +76,9 @@ Nao incluido nesta versao:
 - Autenticacao
 - Pagamentos
 - PostgreSQL
+
+## Para IAs
+
+Qualquer IA que for trabalhar neste projeto deve ler primeiro todos os arquivos da pasta `.ai/` antes de realizar alterações.
+
+Esses documentos concentram o contexto oficial do produto, arquitetura, padrões de código, roadmap, sprint atual e backlog.
