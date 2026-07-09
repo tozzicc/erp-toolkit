@@ -2,6 +2,8 @@
 
 ## Sprint 0 - Fundação do Projeto
 
+Status: concluída.
+
 Objetivo: criar a base técnica inicial do ERP Toolkit.
 
 Entregas:
@@ -15,17 +17,38 @@ Entregas:
 
 ## Sprint 1 - Consolidação do MVP Técnico
 
+Status: concluída.
+
 Objetivo: estabilizar as ferramentas já criadas e melhorar a experiência de uso.
 
-Entregas previstas:
+Entregas:
 
-- Melhorias de UX nas ferramentas existentes.
-- Tratamento de erros mais consistente.
-- Estados de loading e feedback visual padronizados.
-- Revisão de componentes reutilizáveis.
-- Organização inicial de testes.
+- JSON Formatter completo no frontend e backend.
+- Melhorias de UX no JSON Formatter.
+- Tratamento de erros estruturado no JSON Formatter.
+- Estados de loading e feedback visual no JSON Formatter.
+- Status automático para o JSON Formatter.
+- Metadados de linhas, caracteres e tempo de processamento.
+- Paleta principal azul no frontend.
+
+## Sprint 1.1 - Refinamento de UX do JSON Formatter
+
+Status: concluída.
+
+Objetivo: corrigir pequenos comportamentos e melhorar a experiência do usuário sem criar novas funcionalidades.
+
+Entregas:
+
+- Limpeza do resultado em caso de erro.
+- Status `Aguardando JSON`, `Alterações pendentes`, `JSON válido` e `JSON inválido`.
+- Botões desabilitados conforme contexto.
+- Toast de sucesso ao copiar JSON.
+- Mensagens padronizadas.
+- Atualização de documentação e changelog.
 
 ## Sprint 2 - Qualidade e Testes
+
+Status: planejada.
 
 Objetivo: aumentar confiabilidade do MVP.
 

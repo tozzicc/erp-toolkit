@@ -6,6 +6,7 @@ A documentação oficial de contexto, arquitetura, padrões, roadmap, sprint atu
 
 Antes de modificar o projeto, leia primeiro:
 
+- `.ai/PROJECT_CONTEXT.md`
 - `.ai/context.md`
 - `.ai/architecture.md`
 - `.ai/coding-standards.md`

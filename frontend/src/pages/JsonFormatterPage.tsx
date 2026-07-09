@@ -1,5 +1,15 @@
 import { AxiosError } from "axios";
-import { useState } from "react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Circle,
+  Clipboard,
+  Minimize2,
+  Play,
+  RotateCcw,
+  Trash2,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { api } from "../api/client";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { PageHeader } from "../components/PageHeader";
@@ -7,41 +17,335 @@ import { PrimaryButton } from "../components/PrimaryButton";
 import { TextAreaField } from "../components/TextAreaField";
 import { ToolPanel } from "../components/ToolPanel";
 
+type JsonMode = "format" | "minify";
+type JsonAction = JsonMode | "validate";
+type JsonStatus = "idle" | "pending" | "valid" | "invalid";
+
+type JsonMetadata = {
+  characters: number;
+  lines: number;
+  bytes: number;
+};
+
+type ProcessedMetadata = JsonMetadata & {
+  processingTimeMs: number;
+};
+
+type JsonFormatResponse = {
+  result: string;
+  valid: boolean;
+  metadata: JsonMetadata;
+};
+
+type JsonErrorDetail =
+  | string
+  | {
+      message?: string;
+      line?: number;
+      column?: number;
+      position?: number;
+    };
+
+const sampleJson = JSON.stringify(
+  {
+    erp: "toolkit",
+    status: "ready",
+    modules: ["json", "base64", "uuid"],
+    metadata: {
+      environment: "local",
+      version: 1,
+    },
+  },
+  null,
+  2,
+);
+
+const statusConfig: Record<JsonStatus, { label: string; className: string; icon: typeof Circle }> = {
+  idle: {
+    label: "Aguardando JSON",
+    className: "text-amber-600",
+    icon: Circle,
+  },
+  pending: {
+    label: "Alterações pendentes",
+    className: "text-orange-600",
+    icon: Circle,
+  },
+  valid: {
+    label: "JSON válido",
+    className: "text-brand-600",
+    icon: CheckCircle2,
+  },
+  invalid: {
+    label: "JSON inválido",
+    className: "text-red-600",
+    icon: AlertCircle,
+  },
+};
+
 export function JsonFormatterPage() {
-  const [input, setInput] = useState('{"erp":"toolkit","status":"ready"}');
+  const [input, setInput] = useState(sampleJson);
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [toast, setToast] = useState("");
+  const [status, setStatus] = useState<JsonStatus>("idle");
+  const [hasProcessed, setHasProcessed] = useState(false);
+  const [indent, setIndent] = useState(2);
+  const [sortKeys, setSortKeys] = useState(true);
+  const [metadata, setMetadata] = useState<ProcessedMetadata | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function formatJson() {
+  const trimmedInput = input.trim();
+  const hasInput = trimmedInput.length > 0;
+  const canRunAction = hasInput && !isLoading;
+  const currentStatus = statusConfig[status];
+  const StatusIcon = currentStatus.icon;
+
+  useEffect(() => {
+    if (!toast) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => setToast(""), 3000);
+    return () => window.clearTimeout(timeoutId);
+  }, [toast]);
+
+  function markInputChanged(value: string) {
+    setInput(value);
+    setToast("");
+
+    if (hasProcessed) {
+      setStatus("pending");
+      setSuccess("");
+    }
+  }
+
+  function getErrorMessage(detail: JsonErrorDetail | undefined) {
+    if (!detail) {
+      return "JSON inválido.\n\nDetalhes:\nNão foi possível processar o JSON.";
+    }
+
+    if (typeof detail === "string") {
+      return `JSON inválido.\n\nDetalhes:\n${detail}`;
+    }
+
+    const line = detail.line ? `Linha: ${detail.line}\n` : "";
+    return `JSON inválido.\n\n${line}Detalhes:\n${detail.message ?? "Erro de sintaxe."}`;
+  }
+
+  function getSuccessMessage(action: JsonAction) {
+    if (action === "minify") {
+      return "✔ JSON minificado com sucesso.";
+    }
+
+    if (action === "validate") {
+      return "✔ JSON validado com sucesso.";
+    }
+
+    return "✔ JSON formatado com sucesso.";
+  }
+
+  async function processJson(action: JsonAction) {
+    if (!hasInput) {
+      return;
+    }
+
     setIsLoading(true);
     setError("");
+    setSuccess("");
+    setToast("");
+
+    const startedAt = performance.now();
     try {
-      const { data } = await api.post<{ result: string }>("/api/tools/json/format", { text: input, indent: 2 });
+      const { data } = await api.post<JsonFormatResponse>("/api/tools/json/format", {
+        text: input,
+        indent,
+        sort_keys: sortKeys,
+        mode: action === "minify" ? "minify" : "format",
+      });
+      const processingTimeMs = Math.max(1, Math.round(performance.now() - startedAt));
+
       setOutput(data.result);
+      setMetadata({ ...data.metadata, processingTimeMs });
+      setStatus("valid");
+      setHasProcessed(true);
+      setSuccess(getSuccessMessage(action));
     } catch (err) {
-      const detail = (err as AxiosError<{ detail?: string }>).response?.data?.detail;
-      setError(detail ?? "Nao foi possivel formatar o JSON.");
+      const detail = (err as AxiosError<{ detail?: JsonErrorDetail }>).response?.data?.detail;
+      setOutput("");
+      setMetadata(null);
+      setStatus("invalid");
+      setHasProcessed(true);
+      setError(getErrorMessage(detail));
     } finally {
       setIsLoading(false);
     }
   }
 
+  async function copyOutput() {
+    if (!output) {
+      return;
+    }
+
+    await navigator.clipboard.writeText(output);
+    setToast("✔ JSON copiado para a área de transferência.");
+    setError("");
+  }
+
+  function clearAll() {
+    setInput("");
+    setOutput("");
+    setError("");
+    setSuccess("");
+    setToast("");
+    setMetadata(null);
+    setStatus("idle");
+    setHasProcessed(false);
+  }
+
+  function loadSample() {
+    setInput(sampleJson);
+    setOutput("");
+    setError("");
+    setSuccess("");
+    setToast("");
+    setMetadata(null);
+    setStatus(hasProcessed ? "pending" : "idle");
+  }
+
   return (
     <>
-      <PageHeader title="JSON Formatter" description="Valide e formate JSON usando a API local do ERP Toolkit." />
+      <PageHeader
+        title="JSON Formatter"
+        description="Valide, formate, minifique e revise payloads JSON usando a API local do ERP Toolkit."
+      />
       <ToolPanel title="Formatador">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <TextAreaField label="Entrada" onChange={setInput} value={input} />
-          <TextAreaField label="Resultado" readOnly value={output} />
+        <div className="mb-4 grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="block">
+            <span className="text-sm font-medium text-slate-700">Indentacao</span>
+            <select
+              className="mt-2 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+              onChange={(event) => setIndent(Number(event.target.value))}
+              value={indent}
+            >
+              <option value={2}>2 espacos</option>
+              <option value={4}>4 espacos</option>
+              <option value={8}>8 espacos</option>
+            </select>
+          </label>
+
+          <label className="flex min-h-10 items-center gap-3 self-end rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700">
+            <input
+              checked={sortKeys}
+              className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+              onChange={(event) => setSortKeys(event.target.checked)}
+              type="checkbox"
+            />
+            Ordenar chaves
+          </label>
+
+          <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
+            <span className="text-xs font-medium uppercase text-slate-500">Status</span>
+            <p className={`mt-1 flex items-center gap-2 text-sm font-semibold ${currentStatus.className}`}>
+              <StatusIcon size={16} />
+              {currentStatus.label}
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
+            <span className="text-xs font-medium uppercase text-slate-500">Metadados</span>
+            <p className="mt-1 text-sm font-semibold text-slate-800">
+              {metadata
+                ? `${metadata.lines} linhas, ${metadata.characters} caracteres, ${metadata.processingTimeMs} ms`
+                : "Sem processamento"}
+            </p>
+          </div>
         </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <TextAreaField
+            label="Entrada"
+            onChange={markInputChanged}
+            placeholder='{"chave":"valor"}'
+            value={input}
+          />
+          <TextAreaField label="Resultado" placeholder="O JSON processado aparecera aqui." readOnly value={output} />
+        </div>
+
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <PrimaryButton isLoading={isLoading} onClick={formatJson}>
+          <PrimaryButton disabled={!hasInput} isLoading={isLoading} onClick={() => processJson("format")}>
+            <Play size={17} />
             Formatar JSON
           </PrimaryButton>
+
+          <button
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={!canRunAction}
+            onClick={() => processJson("minify")}
+            type="button"
+          >
+            <Minimize2 size={17} />
+            Minificar
+          </button>
+
+          <button
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={!canRunAction}
+            onClick={() => processJson("validate")}
+            type="button"
+          >
+            <CheckCircle2 size={17} />
+            Validar
+          </button>
+
+          <button
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={!output || isLoading}
+            onClick={copyOutput}
+            type="button"
+          >
+            <Clipboard size={17} />
+            Copiar
+          </button>
+
+          <button
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            onClick={loadSample}
+            type="button"
+          >
+            <RotateCcw size={17} />
+            Exemplo
+          </button>
+
+          <button
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50"
+            onClick={clearAll}
+            type="button"
+          >
+            <Trash2 size={17} />
+            Limpar
+          </button>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          {success ? (
+            <p className="rounded-lg border border-brand-100 bg-brand-50 px-3 py-2 text-sm text-brand-700">
+              {success}
+            </p>
+          ) : null}
           <ErrorMessage message={error} />
         </div>
       </ToolPanel>
+
+      {toast ? (
+        <div
+          aria-live="polite"
+          className="fixed bottom-5 right-5 z-50 rounded-lg border border-brand-100 bg-white px-4 py-3 text-sm font-medium text-brand-700 shadow-soft"
+        >
+          {toast}
+        </div>
+      ) : null}
     </>
   );
 }

@@ -6,6 +6,22 @@ O ERP Toolkit é uma plataforma de ferramentas para consultores, analistas e des
 
 A proposta do projeto é reunir utilitários técnicos comuns em uma interface simples, rápida e organizada, permitindo que profissionais de ERP executem tarefas recorrentes sem depender de ferramentas dispersas.
 
+## Estado Atual
+
+O projeto está na conclusão da Sprint 1, com a fundação técnica criada e o JSON Formatter implementado como primeira ferramenta refinada de ponta a ponta.
+
+Estado implementado:
+
+- Frontend separado do backend.
+- Frontend em React, TypeScript, Vite, Tailwind CSS, React Router, Axios e Lucide React.
+- Backend em Python, FastAPI, Uvicorn e SQLite inicial.
+- Comunicação via REST API.
+- Layout responsivo com menu lateral.
+- Paleta principal azul configurada no tema Tailwind.
+- Dashboard com cards das ferramentas do MVP.
+- JSON Formatter completo e refinado.
+- Demais ferramentas ainda em versão inicial.
+
 ## Missão
 
 Criar ferramentas que economizem tempo para profissionais de ERP.
@@ -36,11 +52,15 @@ Criar ferramentas que economizem tempo para profissionais de ERP.
 - TypeScript
 - Vite
 - Tailwind CSS
+- React Router
+- Axios
+- Lucide React
 
 ### Backend
 
 - FastAPI
 - Python
+- Uvicorn
 
 ### Banco
 
@@ -66,6 +86,39 @@ Cada ferramenta deve possuir:
 - Componentes reutilizáveis
 - Endpoint específico
 - Testes futuramente
+
+## JSON Formatter
+
+O JSON Formatter é a ferramenta mais completa no estado atual.
+
+Funcionalidades implementadas:
+
+- Formatação de JSON.
+- Minificação de JSON.
+- Validação de JSON.
+- Ordenação opcional de chaves.
+- Seleção de indentação.
+- Resultado somente leitura.
+- Cópia do resultado para a área de transferência.
+- Status automático: `Aguardando JSON`, `Alterações pendentes`, `JSON válido` e `JSON inválido`.
+- Limpeza do resultado em caso de erro.
+- Metadados com linhas, caracteres e tempo de processamento em milissegundos.
+- Mensagens de sucesso e erro padronizadas.
+- Toast de sucesso ao copiar.
+- Botões desabilitados conforme contexto.
+
+Endpoint principal:
+
+- `POST /api/tools/json/format`
+
+## Ferramentas em Versão Inicial
+
+- Base64
+- UUID Generator
+- Password Generator
+- SQL Formatter
+
+Essas ferramentas existem no frontend e backend, mas ainda não passaram pelo mesmo refinamento aplicado ao JSON Formatter.
 
 ## Filosofia
 
@@ -95,27 +148,21 @@ Se não economizar tempo, provavelmente não faz parte do MVP.
 - Priorizar legibilidade.
 - Criar componentes pequenos.
 - Documentar funcionalidades importantes.
-
-## Roadmap do MVP
-
-- Dashboard
-- JSON Formatter
-- Base64
-- UUID Generator
-- Password Generator
-- SQL Formatter
-
-Posteriormente:
-
-- API Tester
-- Log Analyzer
-- AI Assistant
-- Autenticação
+- Registrar novas ideias no backlog antes de implementar.
+- Propor mudanças estruturais antes de executar.
 
 ## Estrutura do Projeto
 
 ```text
 ERPToolkit/
++-- .ai/
+|   +-- PROJECT_CONTEXT.md
+|   +-- context.md
+|   +-- architecture.md
+|   +-- coding-standards.md
+|   +-- roadmap.md
+|   +-- current-sprint.md
+|   +-- backlog.md
 +-- backend/
 |   +-- app/
 |   |   +-- __init__.py
@@ -142,24 +189,12 @@ ERPToolkit/
 |   +-- tsconfig.json
 |   +-- tsconfig.node.json
 |   +-- vite.config.ts
-+-- .gitignore
++-- CHANGELOG.md
 +-- PROJECT_CONTEXT.md
 +-- README.md
 ```
 
-### Backend
-
-O backend concentra a API FastAPI, os schemas de entrada, as funções das ferramentas e a configuração inicial do SQLite.
-
-### Frontend
-
-O frontend concentra a interface React, as rotas, as páginas das ferramentas, a configuração visual e os componentes reutilizáveis.
-
-### Docs
-
-A pasta `docs/` armazena documentação técnica complementar do projeto.
-
-## Como contribuir
+## Como Contribuir
 
 Toda alteração deve preservar a arquitetura existente.
 
@@ -171,9 +206,9 @@ Mudanças estruturais devem ser propostas e avaliadas antes da implementação.
 
 O ERP Toolkit deverá evoluir para uma plataforma completa para profissionais de ERP, mantendo sempre foco em produtividade e qualidade.
 
-## Como utilizar este documento
+## Como Utilizar Este Documento
 
-Este arquivo é a fonte oficial de contexto do projeto ERP Toolkit.
+Este arquivo é uma fonte oficial de contexto do projeto ERP Toolkit.
 
 Qualquer pessoa ou IA que for modificar o projeto deve ler este documento antes de realizar alterações. Ele deve ser usado para compreender os objetivos do produto, a arquitetura, os padrões adotados, as regras de desenvolvimento e os critérios para decidir se uma funcionalidade pertence ao MVP.
 

@@ -5,11 +5,12 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: "#f1f8f6",
-          100: "#dcefeb",
-          500: "#2b9c86",
-          600: "#1f7f6d",
-          700: "#196658",
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
         },
       },
       boxShadow: {

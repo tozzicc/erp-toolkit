@@ -11,6 +11,7 @@ from app.tools import (
     encode_base64,
     format_json,
     format_sql,
+    get_json_metadata,
     generate_password,
     generate_uuid,
 )
@@ -38,11 +39,29 @@ def health() -> dict[str, str]:
 
 
 @app.post("/api/tools/json/format")
-def json_format(payload: JsonFormatPayload) -> dict[str, str]:
+def json_format(payload: JsonFormatPayload) -> dict[str, object]:
     try:
-        return {"result": format_json(payload.text, payload.indent)}
+        result = format_json(
+            text=payload.text,
+            indent=payload.indent,
+            sort_keys=payload.sort_keys,
+            mode=payload.mode,
+        )
+        return {
+            "result": result,
+            "valid": True,
+            "metadata": get_json_metadata(result),
+        }
     except json.JSONDecodeError as exc:
-        raise HTTPException(status_code=400, detail=f"Invalid JSON: {exc.msg}") from exc
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": exc.msg,
+                "line": exc.lineno,
+                "column": exc.colno,
+                "position": exc.pos,
+            },
+        ) from exc
 
 
 @app.post("/api/tools/base64/encode")

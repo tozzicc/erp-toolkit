@@ -1,38 +1,48 @@
 # Sprint Atual
 
-## Sprint 0 - Fundação do Projeto
+## Sprint 1 - Consolidação do MVP Técnico
 
-Esta é a sprint atual do ERP Toolkit.
+Status: concluída.
 
 ## Objetivos
 
-- Criar a primeira versão estrutural do projeto.
-- Separar frontend e backend.
-- Disponibilizar ferramentas iniciais do MVP.
-- Criar documentação base para orientar desenvolvedores e IAs.
-- Manter a arquitetura simples, limpa e fácil de evoluir.
+- Consolidar a base técnica criada na Sprint 0.
+- Implementar o JSON Formatter completo no frontend e backend.
+- Refinar a experiência do usuário no JSON Formatter na Sprint 1.1.
+- Corrigir pequenos comportamentos de estado, mensagens, resultado e botões.
+- Manter a arquitetura atual sem criar novas ferramentas.
+- Preservar consistência visual com o Dashboard.
 
 ## Critérios de Aceite
 
-- O projeto possui as pastas `frontend/`, `backend/`, `docs/` e `.ai/`.
-- O frontend roda localmente em `http://localhost:5183`.
-- O backend roda localmente em `http://localhost:8000`.
-- O frontend consome o backend via REST API.
-- O menu lateral possui as ferramentas do MVP inicial.
-- Cada ferramenta inicial possui página própria.
-- O backend expõe endpoints específicos para as ferramentas iniciais.
-- A documentação oficial para IAs está centralizada em `.ai/`.
+- O JSON Formatter permite formatar, validar e minificar JSON.
+- O backend aceita indentação, ordenação opcional de chaves e modo de processamento.
+- O backend retorna resultado, validade e metadados básicos.
+- O frontend exibe status automático: `Aguardando JSON`, `Alterações pendentes`, `JSON válido` e `JSON inválido`.
+- O resultado é limpo quando ocorre erro.
+- O botão copiar fica desabilitado sem resultado.
+- O painel de resultado permanece somente leitura e permite seleção.
+- O botão limpar reseta entrada, resultado, mensagens, metadados e status.
+- Os metadados exibem linhas, caracteres e tempo de processamento após sucesso.
+- Ações ficam desabilitadas quando a entrada está vazia ou durante loading.
+- Mensagens de sucesso e erro estão padronizadas.
+- O toast de cópia é exibido após copiar o resultado.
+- A paleta principal do frontend está azul.
+- Não houve criação de novas ferramentas, alteração de arquitetura ou modificação do layout principal.
 
-## O que está sendo desenvolvido
+## Concluído
 
-- Dashboard.
-- JSON Formatter.
-- Base64.
-- UUID Generator.
-- Password Generator.
-- SQL Formatter.
-- Documentação base do projeto.
-- Organização inicial de padrões e contexto para IAs.
+- JSON Formatter completo no backend.
+- JSON Formatter completo no frontend.
+- Refinamento de UX do JSON Formatter na Sprint 1.1.
+- Resultado antigo removido em caso de erro.
+- Status automático implementado.
+- Botões desabilitados conforme entrada, resultado e loading.
+- Mensagens de sucesso, erro e cópia padronizadas.
+- Metadados com tempo de processamento em milissegundos.
+- Toast de sucesso ao copiar JSON.
+- Paleta visual principal alterada de verde para azul.
+- Documentação atualizada para refletir o estado atual do projeto.
 
 ## O que ainda não faz parte desta sprint
 
@@ -47,3 +57,14 @@ Esta é a sprint atual do ERP Toolkit.
 - Testes automatizados completos.
 - Histórico de uso das ferramentas.
 - Preferências de usuário.
+
+## Próxima Sprint Recomendada
+
+Sprint 2 - Qualidade e Testes.
+
+Foco sugerido:
+
+- Testes automatizados para o JSON Formatter.
+- Testes dos endpoints principais.
+- Validação de contratos entre frontend e backend.
+- Revisão de acessibilidade e estados de erro.

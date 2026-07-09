@@ -64,6 +64,7 @@ Cada ferramenta deve ter um endpoint específico no backend. A interface da ferr
 ERPToolkit/
 +-- .ai/
 |   +-- context.md
+|   +-- PROJECT_CONTEXT.md
 |   +-- architecture.md
 |   +-- coding-standards.md
 |   +-- roadmap.md
@@ -86,3 +87,22 @@ ERPToolkit/
 - Manter regras de negócio das ferramentas no backend quando dependerem de API.
 - Evoluir infraestrutura, autenticação e banco relacional somente após validação do MVP.
 - Propor mudanças estruturais antes de implementá-las.
+
+## Estado Visual Atual
+
+O frontend utiliza uma paleta principal azul configurada em `frontend/tailwind.config.js` por meio da escala `brand`.
+
+Essa escala é usada em navegação, botões principais, foco de campos, feedbacks positivos e cards do Dashboard.
+
+## Ferramenta Mais Madura
+
+O JSON Formatter é a ferramenta mais completa no estado atual.
+
+Ele possui:
+
+- Página própria em `frontend/src/pages/JsonFormatterPage.tsx`.
+- Endpoint específico em `POST /api/tools/json/format`.
+- Schema em `backend/app/schemas.py`.
+- Regras de processamento em `backend/app/tools.py`.
+- Tratamento de erro estruturado em `backend/app/main.py`.
+- Estados de UX refinados: loading, sucesso, erro, pendência, metadados e toast.

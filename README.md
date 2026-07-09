@@ -1,14 +1,14 @@
 # ERP Toolkit
 
-ERP Toolkit e um conjunto de ferramentas para apoiar rotinas tecnicas de ERP, com frontend em React e backend em FastAPI.
+ERP Toolkit é um conjunto de ferramentas para apoiar rotinas técnicas de ERP, com frontend em React e backend em FastAPI.
 
 ## Estrutura
 
 ```text
-frontend/  Aplicacao web em React, TypeScript, Vite e Tailwind CSS
+frontend/  Aplicação web em React, TypeScript, Vite e Tailwind CSS
 backend/   API em Python, FastAPI e SQLite
-docs/      Documentacao do projeto
-.ai/      Documentacao oficial de contexto para IAs
+docs/      Documentação do projeto
+.ai/       Documentação oficial de contexto para IAs
 ```
 
 ## Requisitos
@@ -27,7 +27,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-A API ficara disponivel em `http://localhost:8000`.
+A API ficará disponível em `http://localhost:8000`.
 
 Endpoint de saude:
 
@@ -43,7 +43,7 @@ npm install
 npm run dev
 ```
 
-O frontend ficara disponivel em `http://localhost:5183` e consumira o backend em `http://localhost:8000`.
+O frontend ficará disponível em `http://localhost:5183` e consumirá o backend em `http://localhost:8000`.
 
 ## Scripts
 
@@ -57,9 +57,22 @@ Frontend:
 - `npm run build`
 - `npm run preview`
 
-## Escopo da primeira versao
+## Estado Atual
 
-Incluido:
+Sprint 1 concluída.
+
+Implementado:
+
+- Dashboard com cards das ferramentas.
+- Layout responsivo com menu lateral.
+- Paleta principal azul.
+- JSON Formatter completo com formatação, validação, minificação, ordenação opcional de chaves, indentação configurável, mensagens padronizadas, status automático, metadados e toast de cópia.
+- Backend FastAPI com endpoint `POST /api/tools/json/format`.
+- Ferramentas Base64, UUID Generator, Password Generator e SQL Formatter em versão inicial.
+
+## Escopo da primeira versão
+
+Incluído:
 
 - Dashboard
 - JSON Formatter
@@ -70,7 +83,7 @@ Incluido:
 - API FastAPI com endpoints das ferramentas
 - SQLite configurado inicialmente
 
-Nao incluido nesta versao:
+Não incluído nesta versão:
 
 - Docker
 - Autenticacao
@@ -82,3 +95,7 @@ Nao incluido nesta versao:
 Qualquer IA que for trabalhar neste projeto deve ler primeiro todos os arquivos da pasta `.ai/` antes de realizar alterações.
 
 Esses documentos concentram o contexto oficial do produto, arquitetura, padrões de código, roadmap, sprint atual e backlog.
+
+Arquivo de entrada recomendado:
+
+- `.ai/PROJECT_CONTEXT.md`

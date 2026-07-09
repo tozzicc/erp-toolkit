@@ -25,9 +25,20 @@ SQL_KEYWORDS = [
 ]
 
 
-def format_json(text: str, indent: int = 2) -> str:
+def format_json(text: str, indent: int = 2, sort_keys: bool = True, mode: str = "format") -> str:
     parsed = json.loads(text)
-    return json.dumps(parsed, indent=indent, ensure_ascii=False, sort_keys=True)
+    if mode == "minify":
+        return json.dumps(parsed, ensure_ascii=False, separators=(",", ":"), sort_keys=sort_keys)
+
+    return json.dumps(parsed, indent=indent, ensure_ascii=False, sort_keys=sort_keys)
+
+
+def get_json_metadata(result: str) -> dict[str, int]:
+    return {
+        "characters": len(result),
+        "lines": len(result.splitlines()) if result else 0,
+        "bytes": len(result.encode("utf-8")),
+    }
 
 
 def encode_base64(text: str) -> str:

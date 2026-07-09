@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -6,8 +8,10 @@ class TextPayload(BaseModel):
 
 
 class JsonFormatPayload(BaseModel):
-    text: str
+    text: str = Field(min_length=1)
     indent: int = Field(default=2, ge=0, le=8)
+    sort_keys: bool = True
+    mode: Literal["format", "minify"] = "format"
 
 
 class PasswordPayload(BaseModel):
