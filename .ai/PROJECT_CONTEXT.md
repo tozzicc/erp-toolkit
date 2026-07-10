@@ -1,5 +1,9 @@
 # ERP Toolkit
 
+## Atualização da Sprint 3
+
+Sprint 3 concluída com o UUID Generator completo e a extração dos componentes compartilhados `ToolStatusCard` e `ToolMetadataCard`. JSON Formatter e Base64 Toolkit preservam seus comportamentos e agora reutilizam esses cards.
+
 ## Atualização da Sprint 2
 
 Sprint 2 concluída com o Base64 Toolkit no padrão do JSON Formatter. A ferramenta oferece encode, decode, copiar, limpar, trocar entrada/resultado e suporte completo a UTF-8. UUID Generator, Password Generator e SQL Formatter permanecem em versão inicial.

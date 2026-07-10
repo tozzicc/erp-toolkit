@@ -1,5 +1,9 @@
 # Arquitetura
 
+## Cards de status e metadados
+
+As ferramentas maduras compartilham `ToolStatusCard` para estados tipados e `ToolMetadataCard` para informações flexíveis de processamento. O UUID Generator reutiliza esses cards junto de `ToolPanel`, `PageHeader`, `PrimaryButton`, `ActionButton` e `CopyToast`.
+
 ## Base64 Toolkit e componentes compartilhados
 
 O frontend envia texto para endpoints separados de encode e decode. O backend converte explicitamente entre texto UTF-8 e bytes antes de aplicar Base64, preservando caracteres especiais, emojis e alfabetos não latinos.

@@ -1,5 +1,12 @@
 # Arquitetura
 
+## Cards compartilhados das ferramentas
+
+- `ToolStatusCard`: apresenta status tipado nas variantes `idle`, `pending`, `success`, `error` e `loading`, com ícone opcional.
+- `ToolMetadataCard`: apresenta conteúdo textual flexível ou o estado vazio `Sem processamento`.
+
+JSON Formatter, Base64 Toolkit e UUID Generator utilizam os dois componentes para manter consistência sem duplicar estrutura visual.
+
 ## Base64 Toolkit
 
 O Base64 Toolkit segue o padrão de página do JSON Formatter e reutiliza `ActionButton`, `CopyToast`, `TextAreaField`, `ToolPanel`, `PageHeader`, `PrimaryButton` e `ErrorMessage`. O backend converte explicitamente entre texto UTF-8 e bytes nos endpoints dedicados de encode e decode.

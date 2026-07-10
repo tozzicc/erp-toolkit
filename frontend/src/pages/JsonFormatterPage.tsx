@@ -1,8 +1,6 @@
 import { AxiosError } from "axios";
 import {
-  AlertCircle,
   CheckCircle2,
-  Circle,
   Clipboard,
   Minimize2,
   Play,
@@ -17,7 +15,9 @@ import { ErrorMessage } from "../components/ErrorMessage";
 import { PageHeader } from "../components/PageHeader";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { TextAreaField } from "../components/TextAreaField";
+import { ToolMetadataCard } from "../components/ToolMetadataCard";
 import { ToolPanel } from "../components/ToolPanel";
+import { ToolStatusCard, type ToolStatusTone } from "../components/ToolStatusCard";
 
 type JsonMode = "format" | "minify";
 type JsonAction = JsonMode | "validate";
@@ -62,26 +62,22 @@ const sampleJson = JSON.stringify(
   2,
 );
 
-const statusConfig: Record<JsonStatus, { label: string; className: string; icon: typeof Circle }> = {
+const statusConfig: Record<JsonStatus, { label: string; tone: ToolStatusTone }> = {
   idle: {
     label: "Aguardando JSON",
-    className: "text-amber-600",
-    icon: Circle,
+    tone: "idle",
   },
   pending: {
     label: "Alterações pendentes",
-    className: "text-orange-600",
-    icon: Circle,
+    tone: "pending",
   },
   valid: {
     label: "JSON válido",
-    className: "text-brand-600",
-    icon: CheckCircle2,
+    tone: "success",
   },
   invalid: {
     label: "JSON inválido",
-    className: "text-red-600",
-    icon: AlertCircle,
+    tone: "error",
   },
 };
 
@@ -102,7 +98,6 @@ export function JsonFormatterPage() {
   const hasInput = trimmedInput.length > 0;
   const canRunAction = hasInput && !isLoading;
   const currentStatus = statusConfig[status];
-  const StatusIcon = currentStatus.icon;
 
   useEffect(() => {
     if (!toast) {
@@ -247,22 +242,13 @@ export function JsonFormatterPage() {
             Ordenar chaves
           </label>
 
-          <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="text-xs font-medium uppercase text-slate-500">Status</span>
-            <p className={`mt-1 flex items-center gap-2 text-sm font-semibold ${currentStatus.className}`}>
-              <StatusIcon size={16} />
-              {currentStatus.label}
-            </p>
-          </div>
+          <ToolStatusCard label={currentStatus.label} status={currentStatus.tone} />
 
-          <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="text-xs font-medium uppercase text-slate-500">Metadados</span>
-            <p className="mt-1 text-sm font-semibold text-slate-800">
-              {metadata
-                ? `${metadata.lines} linhas, ${metadata.characters} caracteres, ${metadata.processingTimeMs} ms`
-                : "Sem processamento"}
-            </p>
-          </div>
+          <ToolMetadataCard>
+            {metadata
+              ? `${metadata.lines} linhas, ${metadata.characters} caracteres, ${metadata.processingTimeMs} ms`
+              : null}
+          </ToolMetadataCard>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">

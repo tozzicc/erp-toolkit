@@ -1,5 +1,32 @@
 # Sprint Atual
 
+## Sprint 3 - UUID Generator e componentes compartilhados
+
+Status: concluída em 10/07/2026.
+
+Objetivos concluídos:
+
+- Criados `ToolStatusCard` e `ToolMetadataCard` com contratos tipados e conteúdo flexível.
+- JSON Formatter e Base64 Toolkit migrados para os cards compartilhados sem alterações visuais ou funcionais.
+- UUID Generator implementado com seletor de quantidade para 1, 5, 10, 25, 50 e 100 itens.
+- Geração múltipla de UUIDs v4 únicos, com um resultado por linha.
+- Ações contextuais de copiar, copiar todos, baixar `uuids.txt` e limpar.
+- Endpoint `GET /api/tools/uuid?count=N` validado entre 1 e 100 e documentado no Swagger.
+- Loading, erro, status e metadados com quantidade, caracteres e tempo de geração.
+- Reutilizados `ToolPanel`, `PageHeader`, `PrimaryButton`, `ActionButton` e `CopyToast`.
+- Adicionados testes para validade UUID v4, unicidade, todas as quantidades, performance e OpenAPI.
+- Build de produção e testes de regressão aprovados.
+
+Validações:
+
+- TypeScript e build Vite sem erros.
+- Sete testes de backend aprovados.
+- Regressão básica no navegador aprovada para JSON Formatter, Base64 Toolkit e UUID Generator.
+- Responsividade validada em viewport de 375 px sem overflow horizontal.
+- ESLint configurado e executado sem erros.
+
+---
+
 ## Sprint 2 - Base64 Toolkit
 
 Data de conclusão: 10/07/2026.
@@ -12,8 +39,6 @@ Critérios de aceite atendidos:
 - Ações ficam desabilitadas sem entrada, sem resultado ou durante processamento.
 - Erros de Base64 inválido removem resultados antigos e exibem feedback claro.
 - O JSON Formatter mantém seu comportamento após a extração dos componentes compartilhados.
-
-Próxima sprint recomendada: Sprint 3 - Qualidade e Testes, com testes de integração, testes de frontend, validação de contratos e revisão de acessibilidade.
 
 Status: concluída.
 

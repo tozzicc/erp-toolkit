@@ -1,7 +1,7 @@
 import binascii
 import json
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import initialize_database
@@ -13,7 +13,7 @@ from app.tools import (
     format_sql,
     get_json_metadata,
     generate_password,
-    generate_uuid,
+    generate_uuids,
 )
 
 
@@ -78,8 +78,10 @@ def base64_decode(payload: TextPayload) -> dict[str, str]:
 
 
 @app.get("/api/tools/uuid")
-def uuid_generate() -> dict[str, str]:
-    return {"uuid": generate_uuid()}
+def uuid_generate(
+    count: int = Query(default=1, ge=1, le=100, description="Quantidade de UUIDs v4 a gerar."),
+) -> dict[str, list[str]]:
+    return {"uuids": generate_uuids(count)}
 
 
 @app.post("/api/tools/password")

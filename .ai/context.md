@@ -1,5 +1,9 @@
 # ERP Toolkit
 
+## Estado após a Sprint 3
+
+O UUID Generator está completo, com geração de UUID v4, copiar, limpar, status e metadados. JSON Formatter, Base64 Toolkit e UUID Generator compartilham `ToolStatusCard` e `ToolMetadataCard`, além dos componentes visuais já existentes.
+
 ## Estado após a Sprint 2
 
 O Base64 Toolkit está completo no frontend e backend, com encode, decode, copiar, limpar, trocar entrada/resultado, estados visuais padronizados e suporte a UTF-8. Seus endpoints são `POST /api/tools/base64/encode` e `POST /api/tools/base64/decode`. UUID Generator, Password Generator e SQL Formatter permanecem em versão inicial.

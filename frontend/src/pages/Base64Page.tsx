@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { AlertCircle, ArrowLeftRight, CheckCircle2, Circle, Clipboard, LockKeyhole, Trash2, UnlockKeyhole } from "lucide-react";
+import { ArrowLeftRight, Clipboard, LockKeyhole, Trash2, UnlockKeyhole } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
 import { ActionButton } from "../components/ActionButton";
@@ -8,17 +8,19 @@ import { ErrorMessage } from "../components/ErrorMessage";
 import { PageHeader } from "../components/PageHeader";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { TextAreaField } from "../components/TextAreaField";
+import { ToolMetadataCard } from "../components/ToolMetadataCard";
 import { ToolPanel } from "../components/ToolPanel";
+import { ToolStatusCard, type ToolStatusTone } from "../components/ToolStatusCard";
 
 type Base64Action = "encode" | "decode";
 type Base64Status = "idle" | "pending" | "success" | "invalid";
 
 const statusConfig = {
-  idle: { label: "Aguardando texto", className: "text-amber-600", icon: Circle },
-  pending: { label: "Alterações pendentes", className: "text-orange-600", icon: Circle },
-  success: { label: "Processado com sucesso", className: "text-brand-600", icon: CheckCircle2 },
-  invalid: { label: "Entrada inválida", className: "text-red-600", icon: AlertCircle },
-} satisfies Record<Base64Status, { label: string; className: string; icon: typeof Circle }>;
+  idle: { label: "Aguardando texto", tone: "idle" },
+  pending: { label: "Alterações pendentes", tone: "pending" },
+  success: { label: "Processado com sucesso", tone: "success" },
+  invalid: { label: "Entrada inválida", tone: "error" },
+} satisfies Record<Base64Status, { label: string; tone: ToolStatusTone }>;
 
 export function Base64Page() {
   const [input, setInput] = useState("ERP Toolkit");
@@ -34,7 +36,6 @@ export function Base64Page() {
   const hasInput = input.length > 0;
   const canRunAction = hasInput && !isLoading;
   const currentStatus = statusConfig[status];
-  const StatusIcon = currentStatus.icon;
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -112,18 +113,12 @@ export function Base64Page() {
       <PageHeader title="Base64 Toolkit" description="Codifique e decodifique textos com suporte completo a UTF-8 usando a API local do ERP Toolkit." />
       <ToolPanel title="Conversor">
         <div className="mb-4 grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2">
-          <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="text-xs font-medium uppercase text-slate-500">Status</span>
-            <p className={`mt-1 flex items-center gap-2 text-sm font-semibold ${currentStatus.className}`}>
-              <StatusIcon size={16} /> {currentStatus.label}
-            </p>
-          </div>
-          <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="text-xs font-medium uppercase text-slate-500">Metadados</span>
-            <p className="mt-1 text-sm font-semibold text-slate-800">
-              {processingTimeMs === null ? "Sem processamento" : `${output.length} caracteres, ${new Blob([output]).size} bytes, ${processingTimeMs} ms`}
-            </p>
-          </div>
+          <ToolStatusCard label={currentStatus.label} status={currentStatus.tone} />
+          <ToolMetadataCard>
+            {processingTimeMs === null
+              ? null
+              : `${output.length} caracteres, ${new Blob([output]).size} bytes, ${processingTimeMs} ms`}
+          </ToolMetadataCard>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">

@@ -4,6 +4,22 @@
 
 ## Unreleased
 
+### UUID Generator
+
+- Implementada geração de 1, 5, 10, 25, 50 ou 100 UUIDs v4 sem duplicações.
+- Adicionadas ações contextuais de copiar, copiar todos, baixar `uuids.txt` e limpar.
+- Adicionados status de espera, processamento, sucesso e erro.
+- Adicionados metadados com quantidade, caracteres e tempo de processamento.
+- Atualizado `GET /api/tools/uuid` com parâmetro `count`, validação entre 1 e 100 e documentação no Swagger.
+- Adicionados testes de validade, versão, unicidade, quantidades suportadas, performance e contrato OpenAPI.
+- Configurado ESLint para TypeScript e React Hooks no frontend.
+
+### Shared Tool Cards
+
+- Criados `ToolStatusCard` e `ToolMetadataCard` com propriedades tipadas.
+- Removida a duplicação dos cards de status e metadados no JSON Formatter e Base64 Toolkit.
+- Preservados layout, textos, fluxos e regras de negócio existentes.
+
 ### Base64 Toolkit
 
 - Implementados encode e decode por endpoints dedicados da API.
@@ -30,6 +46,7 @@
 
 ### Documentation
 
+- Atualizados `CHANGELOG.md`, `PROJECT_CONTEXT.md`, `.ai/current-sprint.md` e README para encerrar a Sprint 3.
 - Atualizada a documentação da Sprint 1 e Sprint 1.1.
 - Adicionado `.ai/PROJECT_CONTEXT.md` como ponto de contexto consolidado para IAs.
 - Atualizado o contexto oficial em `.ai/context.md`.

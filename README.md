@@ -1,5 +1,17 @@
 # ERP Toolkit
 
+## Sprint 3 - UUID Generator
+
+Sprint 3 concluída com o UUID Generator completo e os componentes compartilhados `ToolStatusCard` e `ToolMetadataCard`, reutilizados também pelo JSON Formatter e Base64 Toolkit.
+
+O UUID Generator oferece:
+
+- Geração de 1, 5, 10, 25, 50 ou 100 UUIDs v4 únicos.
+- Copiar um UUID ou copiar todos, mantendo um item por linha.
+- Download do resultado em `uuids.txt`.
+- Status e metadados de quantidade, caracteres e tempo de geração.
+- Endpoint `GET /api/tools/uuid?count=10`, com valores aceitos entre 1 e 100 e documentação no Swagger.
+
 ## Sprint 2 - Base64 Toolkit
 
 Sprint 2 concluída com encode, decode, cópia, limpeza, troca entre entrada e resultado, estados visuais e suporte completo a UTF-8. A API expõe `POST /api/tools/base64/encode` e `POST /api/tools/base64/decode`. UUID Generator, Password Generator e SQL Formatter permanecem em versão inicial.
@@ -58,6 +70,7 @@ Backend:
 Frontend:
 
 - `npm run dev`
+- `npm run lint`
 - `npm run build`
 - `npm run preview`
 

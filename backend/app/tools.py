@@ -53,6 +53,13 @@ def generate_uuid() -> str:
     return str(uuid.uuid4())
 
 
+def generate_uuids(count: int) -> list[str]:
+    generated = {generate_uuid() for _ in range(count)}
+    while len(generated) < count:
+        generated.add(generate_uuid())
+    return list(generated)
+
+
 def generate_password(
     length: int,
     include_uppercase: bool,

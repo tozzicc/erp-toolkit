@@ -1,5 +1,17 @@
 # Roadmap
 
+## Sprint 3 - UUID Generator e componentes compartilhados
+
+Status: concluída.
+
+Entregas:
+
+- Cards compartilhados de status e metadados.
+- JSON Formatter e Base64 Toolkit refatorados sem regressões.
+- UUID Generator completo com gerar, copiar e limpar.
+- Estados visuais e metadados no padrão das ferramentas maduras.
+- Testes unitários e regressão básica dos fluxos principais.
+
 ## Sprint 2 - Base64 Toolkit
 
 Status: concluída.
