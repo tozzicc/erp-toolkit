@@ -1,8 +1,27 @@
 # Changelog
 
-> Documentação, contexto técnico e validações atualizados até a conclusão da Sprint 4 em 10/07/2026.
+> Documentação, contexto técnico e validações atualizados até a Sprint 5.1 Release Candidate em 10/07/2026.
 
 ## Unreleased
+
+### Sprint 5.1 - Release Candidate
+
+- Refinada a saída de CTEs para iniciar o `SELECT` principal em uma nova linha após o fechamento do `WITH`.
+- Normalizados `UNION`, `UNION ALL`, `INTERSECT` e `EXCEPT`, sempre com o próximo `SELECT` em nova linha.
+- Flexibilizada a validação de `SELECT` sem `FROM` para expressões, constantes, variáveis e funções válidas.
+- Mantida a rejeição de identificadores de coluna isolados, como `SELECT A1_COD`.
+- Revisadas as indentações de CASE, JOIN, EXISTS, NOT EXISTS, IN e subqueries.
+- Preservados endpoint, payload, resposta, layout e componentes públicos do SQL Formatter.
+- Confirmada compatibilidade com JSON Formatter, Base64 Toolkit, UUID Generator e Password Generator.
+
+### SQL Formatter
+
+- Implementados formatar, minificar, validar, copiar, exemplo e limpar.
+- Adicionadas opções de keywords, quebra de linhas, JOIN, CASE e alinhamento de SELECT.
+- Adicionado suporte estruturado a CTEs, subqueries, CASE, JOINs e operações de conjunto.
+- Adicionadas validações básicas de parênteses, aspas, CASE e SELECTs sem origem válida.
+- Integrado `sqlparse` ao backend sem alteração do endpoint público.
+- Adicionados testes de formatação, opções, minificação, validação e contrato OpenAPI.
 
 ### Password Generator
 

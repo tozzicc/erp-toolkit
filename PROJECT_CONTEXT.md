@@ -1,5 +1,20 @@
 # ERP Toolkit
 
+## Sprint 5.1 - Release Candidate
+
+Sprint 5.1 concluída como refinamento compatível do SQL Formatter. CTEs agora separam corretamente o `SELECT` principal, operações `UNION`, `UNION ALL`, `INTERSECT` e `EXCEPT` iniciam o próximo `SELECT` em nova linha, e o validador aceita expressões e funções legítimas sem `FROM` enquanto continua rejeitando identificadores de coluna isolados.
+
+Compatibilidade preservada:
+
+- Nenhuma alteração nos contratos públicos do SQL Formatter.
+- Nenhuma alteração no layout principal ou nos componentes compartilhados.
+- JSON Formatter, Base64 Toolkit, UUID Generator e Password Generator permanecem inalterados.
+- Lint, build e 27 testes automatizados aprovados.
+
+## Sprint 5 - SQL Formatter
+
+O SQL Formatter está completo com formatação, minificação, validação, cópia, exemplo, limpeza, opções configuráveis, status, metadados e suporte a CTEs, CASE, JOINs, subqueries, EXISTS e operações de conjunto.
+
 ## Sprint 4 - Password Generator
 
 Sprint 4 concluída. O Password Generator oferece comprimentos predefinidos entre 8 e 64 caracteres, seleção de grupos, exclusão de caracteres ambíguos, resultado somente leitura, cópia, limpeza, medidor de força e metadados de entropia e tempo. O endpoint `POST /api/tools/password` retorna `password`, `strength` e `entropy` e está documentado no Swagger.
@@ -32,7 +47,7 @@ Sprint 3 concluída. O UUID Generator gera de 1 a 100 UUIDs v4 únicos, permite 
 - Quantidades de 1, 5, 10, 25, 50 e 100 UUIDs validadas sem duplicações.
 - JSON Formatter e Base64 Toolkit preservados após a refatoração dos cards compartilhados.
 
-Estado atual: Sprint 4 concluída, com JSON Formatter, Base64 Toolkit, UUID Generator e Password Generator completos.
+Estado atual: Sprint 5.1 Release Candidate concluída, com as cinco ferramentas principais refinadas e compatíveis.
 
 O ERP Toolkit é uma plataforma de ferramentas para consultores, analistas e desenvolvedores de ERP, focada em aumentar produtividade e reduzir o tempo gasto em tarefas repetitivas.
 

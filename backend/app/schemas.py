@@ -24,4 +24,10 @@ class PasswordPayload(BaseModel):
 
 
 class SqlFormatPayload(BaseModel):
-    sql: str
+    sql: str = Field(min_length=1)
+    mode: Literal["format", "minify", "validate"] = "format"
+    keywords_uppercase: bool = True
+    break_lines: bool = True
+    indent_join: bool = True
+    indent_case: bool = True
+    align_select: bool = True

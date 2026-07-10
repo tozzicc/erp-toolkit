@@ -12,8 +12,11 @@ from app.tools import (
     format_json,
     format_sql,
     get_json_metadata,
+    get_sql_metadata,
     generate_password,
     generate_uuids,
+    minify_sql,
+    validate_sql,
 )
 
 
@@ -100,5 +103,20 @@ def password_generate(payload: PasswordPayload) -> dict[str, str | float]:
 
 
 @app.post("/api/tools/sql/format")
-def sql_format(payload: SqlFormatPayload) -> dict[str, str]:
-    return {"result": format_sql(payload.sql)}
+def sql_format(payload: SqlFormatPayload) -> dict[str, object]:
+    try:
+        if payload.mode == "minify":
+            result = minify_sql(payload.sql, keywords_uppercase=payload.keywords_uppercase)
+        else:
+            validate_sql(payload.sql)
+            result = format_sql(
+                payload.sql,
+                keywords_uppercase=payload.keywords_uppercase,
+                break_lines=payload.break_lines,
+                indent_join=payload.indent_join,
+                indent_case=payload.indent_case,
+                align_select=payload.align_select,
+            )
+        return {"result": result, "valid": True, "metadata": get_sql_metadata(result)}
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc

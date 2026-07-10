@@ -6,27 +6,13 @@ import secrets
 import string
 import uuid
 
+import sqlparse
+from sqlparse import tokens as sql_tokens
 
-SQL_KEYWORDS = [
-    "SELECT",
-    "FROM",
-    "WHERE",
-    "INNER JOIN",
-    "LEFT JOIN",
-    "RIGHT JOIN",
-    "FULL JOIN",
-    "JOIN",
-    "GROUP BY",
-    "ORDER BY",
-    "HAVING",
-    "LIMIT",
-    "OFFSET",
-    "VALUES",
-    "SET",
-]
 
 AMBIGUOUS_CHARACTERS = frozenset("0Oo1lI5S8B6G")
 PASSWORD_SYMBOLS = "!@#$%^&*()-_=+[]{};:,.?/|"
+SQL_SET_OPERATOR_PATTERN = r"UNION(?:\s+ALL)?|INTERSECT|EXCEPT"
 
 
 def format_json(text: str, indent: int = 2, sort_keys: bool = True, mode: str = "format") -> str:
@@ -113,16 +99,206 @@ def generate_password(
     }
 
 
-def format_sql(sql: str) -> str:
-    formatted = " ".join(sql.strip().split())
+def validate_sql(sql: str) -> None:
+    stripped = sql.strip()
+    if not stripped:
+        raise ValueError("Informe um SQL para processar.")
 
-    for keyword in SQL_KEYWORDS:
-        pattern = re.compile(rf"\b{re.escape(keyword)}\b", re.IGNORECASE)
-        formatted = pattern.sub(keyword, formatted)
+    parentheses = 0
+    quote: str | None = None
+    index = 0
+    while index < len(stripped):
+        character = stripped[index]
+        if quote:
+            if character == quote:
+                if index + 1 < len(stripped) and stripped[index + 1] == quote:
+                    index += 1
+                else:
+                    quote = None
+        elif character in {"'", '"'}:
+            quote = character
+        elif character == "(":
+            parentheses += 1
+        elif character == ")":
+            parentheses -= 1
+            if parentheses < 0:
+                raise ValueError("Parênteses de fechamento sem abertura correspondente.")
+        index += 1
 
-    break_keywords = [keyword for keyword in SQL_KEYWORDS if keyword != "SELECT"]
-    for keyword in break_keywords:
-        formatted = re.sub(rf"\s+{re.escape(keyword)}\b", f"\n{keyword}", formatted)
+    if quote:
+        raise ValueError("Aspas não foram fechadas corretamente.")
+    if parentheses:
+        raise ValueError("Parênteses não foram fechados corretamente.")
 
-    formatted = re.sub(r",\s*", ",\n  ", formatted)
-    return formatted.strip()
+    statements = sqlparse.parse(stripped)
+    keywords = [
+        token.normalized.upper()
+        for statement in statements
+        for token in statement.flatten()
+        if token.ttype in sql_tokens.Keyword or token.ttype in sql_tokens.Keyword.DML
+    ]
+    for statement in statements:
+        statement_keywords = [
+            token.normalized.upper()
+            for token in statement.flatten()
+            if token.ttype in sql_tokens.Keyword or token.ttype in sql_tokens.Keyword.DML
+        ]
+        if "SELECT" not in statement_keywords or "FROM" in statement_keywords:
+            continue
+
+        compact_statement = sqlparse.format(statement.value, strip_whitespace=True).strip().rstrip(";")
+        for select_part in re.split(rf"(?i)\b(?:{SQL_SET_OPERATOR_PATTERN})\b", compact_statement):
+            match = re.search(r"(?is)\bSELECT\s+(?:DISTINCT\s+)?(.+)$", select_part.strip())
+            if not match:
+                continue
+            expression = match.group(1).strip()
+            bare_identifier = re.fullmatch(
+                r"[A-Za-z_][\w$]*(?:\.[A-Za-z_][\w$]*)*(?:\s+(?:AS\s+)?[A-Za-z_][\w$]*)?",
+                expression,
+                re.IGNORECASE,
+            )
+            if bare_identifier and expression.upper() not in {
+                "CURRENT_DATE",
+                "CURRENT_TIMESTAMP",
+                "NULL",
+                "TRUE",
+                "FALSE",
+            }:
+                raise ValueError("Comando SELECT com identificador de coluna exige cláusula FROM.")
+    if keywords.count("CASE") != keywords.count("END"):
+        raise ValueError("Bloco CASE sem END correspondente.")
+
+
+def _find_main_select_after_ctes(formatted: str) -> int | None:
+    if not re.match(r"(?is)^WITH\b", formatted):
+        return None
+
+    depth = 0
+    quote: str | None = None
+    saw_parenthesis = False
+    index = 0
+    while index < len(formatted):
+        character = formatted[index]
+        if quote:
+            if character == quote:
+                if index + 1 < len(formatted) and formatted[index + 1] == quote:
+                    index += 1
+                else:
+                    quote = None
+        elif character in {"'", '"'}:
+            quote = character
+        elif character == "(":
+            depth += 1
+            saw_parenthesis = True
+        elif character == ")":
+            depth -= 1
+            if saw_parenthesis and depth == 0:
+                remainder = formatted[index + 1 :]
+                match = re.match(r"\s*(?:,|SELECT\b)", remainder, re.IGNORECASE)
+                if match and match.group(0).strip().upper().startswith("SELECT"):
+                    return index + 1 + match.start() + len(match.group(0)) - len(match.group(0).lstrip())
+        index += 1
+    return None
+
+
+def _normalize_cte_and_set_layout(formatted: str) -> str:
+    main_select_index = _find_main_select_after_ctes(formatted)
+    if main_select_index is not None:
+        prefix = formatted[:main_select_index].rstrip()
+        main_query = formatted[main_select_index:].lstrip()
+        prefix_lines = prefix.splitlines()
+        interior_indents = [
+            len(line) - len(line.lstrip())
+            for line in prefix_lines[1:]
+            if line.strip() and not line.lstrip().startswith(")")
+        ]
+        dedent = max(0, min(interior_indents, default=4) - 4)
+        normalized_prefix = [prefix_lines[0]]
+        for line_index, line in enumerate(prefix_lines[1:], start=1):
+            stripped_line = line.lstrip()
+            if line_index == len(prefix_lines) - 1 or stripped_line.startswith("),"):
+                normalized_prefix.append(stripped_line)
+            else:
+                normalized_prefix.append(line[dedent:] if line.startswith(" " * dedent) else line)
+        formatted = "\n".join(normalized_prefix) + "\n\n" + main_query
+
+    matches = list(re.finditer(rf"(?i)\b({SQL_SET_OPERATOR_PATTERN})\s+SELECT\b", formatted))
+    if not matches:
+        return formatted
+
+    pieces: list[str] = []
+    last_index = 0
+    quote: str | None = None
+    scan_index = 0
+    for match in matches:
+        while scan_index < match.start():
+            character = formatted[scan_index]
+            if quote:
+                if character == quote:
+                    if scan_index + 1 < len(formatted) and formatted[scan_index + 1] == quote:
+                        scan_index += 1
+                    else:
+                        quote = None
+            elif character in {"'", '"'}:
+                quote = character
+            scan_index += 1
+
+        if quote:
+            continue
+
+        pieces.append(formatted[last_index : match.start()].rstrip())
+        pieces.append(f"\n{match.group(1)}\nSELECT")
+        last_index = match.end()
+
+    pieces.append(formatted[last_index:])
+    return "".join(pieces).lstrip()
+
+
+def format_sql(
+    sql: str,
+    keywords_uppercase: bool = True,
+    break_lines: bool = True,
+    indent_join: bool = True,
+    indent_case: bool = True,
+    align_select: bool = True,
+) -> str:
+    validate_sql(sql)
+    formatted = sqlparse.format(
+        sql.strip(),
+        keyword_case="upper" if keywords_uppercase else None,
+        reindent=break_lines and not align_select,
+        reindent_aligned=break_lines and align_select,
+        indent_width=2,
+        use_space_around_operators=True,
+    ).strip()
+
+    if break_lines and not indent_join:
+        formatted = re.sub(
+            r"(?im)^\s+(INNER JOIN|LEFT JOIN|RIGHT JOIN|FULL JOIN|CROSS JOIN|JOIN)\b",
+            r"\1",
+            formatted,
+        )
+    if break_lines and not indent_case:
+        formatted = re.sub(r"(?im)^\s+(WHEN|ELSE|END)\b", r"\1", formatted)
+
+    if break_lines:
+        formatted = _normalize_cte_and_set_layout(formatted)
+
+    return formatted
+
+
+def minify_sql(sql: str, keywords_uppercase: bool = True) -> str:
+    validate_sql(sql)
+    return sqlparse.format(
+        sql.strip(),
+        keyword_case="upper" if keywords_uppercase else None,
+        strip_whitespace=True,
+    ).strip()
+
+
+def get_sql_metadata(result: str) -> dict[str, int]:
+    return {
+        "characters": len(result),
+        "lines": len(result.splitlines()) if result else 0,
+        "bytes": len(result.encode("utf-8")),
+    }

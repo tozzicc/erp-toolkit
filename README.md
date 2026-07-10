@@ -1,5 +1,21 @@
 # ERP Toolkit
 
+## Sprint 5.1 - Release Candidate
+
+Release Candidate concluída com refinamentos no SQL Formatter e compatibilidade total com as ferramentas existentes.
+
+Melhorias principais:
+
+- CTEs com o `SELECT` principal separado após o fechamento do `WITH`.
+- `UNION`, `UNION ALL`, `INTERSECT` e `EXCEPT` com o próximo `SELECT` em nova linha.
+- Validação flexível para constantes, funções, variáveis, `CAST` e `CONVERT` sem `FROM`.
+- Indentação revisada para CASE, JOIN, EXISTS, NOT EXISTS, IN e subqueries.
+- Minificação que preserva o conteúdo de literais SQL.
+
+O contrato permanece:
+
+- `POST /api/tools/sql/format`
+
 ## Sprint 4 - Password Generator
 
 Sprint 4 concluída com geração profissional de senhas, comprimentos entre 8 e 64 caracteres, grupos configuráveis, exclusão de ambíguos, medidor de força e entropia estimada.
