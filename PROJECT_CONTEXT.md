@@ -30,7 +30,7 @@ Sprint 3 concluída. O UUID Generator gera de 1 a 100 UUIDs v4 únicos, permite 
 - Endpoints `POST /api/tools/base64/encode` e `POST /api/tools/base64/decode`.
 - Componentes visuais reutilizáveis, incluindo `ActionButton`, `CopyToast`, `ToolStatusCard` e `ToolMetadataCard`.
 - Testes unitários do processamento Base64 para UTF-8 e entradas inválidas.
-- UUID Generator e Password Generator completos; SQL Formatter ainda em versão inicial.
+- UUID Generator, Password Generator e SQL Formatter completos.
 
 ## Validação da Sprint 4
 

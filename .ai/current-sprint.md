@@ -1,5 +1,45 @@
 # Sprint Atual
 
+## Sprint 5.1 - Release Candidate
+
+Status: concluída em 10/07/2026.
+
+Objetivo: refinar o SQL Formatter sem adicionar funcionalidades, alterar APIs públicas, modificar o layout ou causar regressões.
+
+Melhorias e correções:
+
+- CTEs fecham o bloco `WITH` antes de iniciar o `SELECT` principal em nova linha.
+- `UNION`, `UNION ALL`, `INTERSECT` e `EXCEPT` iniciam o próximo `SELECT` em nova linha.
+- Validação de `SELECT` sem `FROM` aceita expressões, constantes, variáveis, funções, `CAST` e `CONVERT`.
+- Identificadores de coluna isolados sem `FROM`, como `SELECT A1_COD`, continuam inválidos.
+- Indentação revisada para CASE, WITH, JOIN, EXISTS, NOT EXISTS, IN e subqueries.
+- Minificação preserva strings e o contrato público existente.
+
+Compatibilidade e validações:
+
+- Endpoint, payload e resposta do SQL Formatter preservados.
+- JSON Formatter, Base64 Toolkit, UUID Generator e Password Generator permaneceram inalterados.
+- Checklist manual aprovada para SELECT, JOINs, operações de conjunto, CASE, EXISTS, CTEs, subqueries, SQL inválido e minificação.
+- Vinte e sete testes automatizados aprovados.
+- Lint, TypeScript e build Vite sem erros.
+
+---
+
+## Sprint 5 - SQL Formatter
+
+Status: concluída em 10/07/2026.
+
+Entregas:
+
+- Formatar, minificar, validar, copiar, carregar exemplo e limpar.
+- Opções de keywords em maiúsculo, quebra de linhas, JOIN, CASE e alinhamento de SELECT.
+- Suporte a CTEs, CASE, JOINs, subqueries, EXISTS e operações de conjunto.
+- Validação básica de parênteses, aspas, CASE e SELECTs sem origem válida.
+- Endpoint `POST /api/tools/sql/format` documentado no Swagger.
+- Reutilização dos componentes compartilhados das ferramentas maduras.
+
+---
+
 ## Sprint 4 - Password Generator
 
 Status: concluída em 10/07/2026.
