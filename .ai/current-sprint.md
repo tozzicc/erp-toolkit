@@ -1,5 +1,31 @@
 # Sprint Atual
 
+## Sprint 4 - Password Generator
+
+Status: concluída em 10/07/2026.
+
+Objetivos concluídos:
+
+- Comprimentos de 8, 12, 16, 20, 24, 32, 48 e 64 caracteres, com padrão 16.
+- Seleção independente de letras maiúsculas, minúsculas, números e caracteres especiais.
+- Exclusão opcional dos caracteres ambíguos `0 O o 1 l I 5 S 8 B 6 G`.
+- Garantia de pelo menos um caractere de cada grupo selecionado.
+- Resultado somente leitura, copiar, limpar e toast de confirmação.
+- Medidor visual nos níveis `Muito fraca`, `Fraca`, `Média`, `Forte` e `Muito forte`.
+- Metadados de quantidade de caracteres, entropia estimada e tempo de geração.
+- Endpoint `POST /api/tools/password` e contrato documentados no Swagger.
+- Reutilização de `ToolPanel`, `ToolStatusCard`, `ToolMetadataCard`, `PrimaryButton`, `ActionButton`, `CopyToast`, `PageHeader` e `ErrorMessage`.
+
+Validações:
+
+- Todas as combinações não vazias de grupos testadas com e sem exclusão de ambíguos.
+- Todos os comprimentos suportados testados.
+- Treze testes do backend aprovados.
+- Lint, TypeScript e build Vite sem erros.
+- Fluxos padrão, exclusão de ambíguos, limpar, força, metadados e responsividade validados no navegador.
+
+---
+
 ## Sprint 3 - UUID Generator e componentes compartilhados
 
 Status: concluída em 10/07/2026.

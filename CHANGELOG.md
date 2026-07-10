@@ -1,8 +1,18 @@
 # Changelog
 
-> Sprint 2 encerrada em 10/07/2026. Documentação, contexto técnico e validações foram atualizados junto com a entrega do Base64 Toolkit.
+> Documentação, contexto técnico e validações atualizados até a conclusão da Sprint 4 em 10/07/2026.
 
 ## Unreleased
+
+### Password Generator
+
+- Implementados comprimentos de 8, 12, 16, 20, 24, 32, 48 e 64 caracteres.
+- Adicionadas seleções de maiúsculas, minúsculas, números, símbolos e exclusão de caracteres ambíguos.
+- Adicionados resultado somente leitura, copiar, limpar, toast e estados padronizados.
+- Implementado medidor visual com níveis `Muito fraca`, `Fraca`, `Média`, `Forte` e `Muito forte`.
+- Adicionados metadados de caracteres, entropia estimada e tempo de geração.
+- Atualizado `POST /api/tools/password` com contrato completo e documentação no Swagger.
+- Adicionados testes para comprimentos, combinações de grupos, ambíguos, entropia, força e OpenAPI.
 
 ### UUID Generator
 

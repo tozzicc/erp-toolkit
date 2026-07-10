@@ -1,5 +1,19 @@
 # ERP Toolkit
 
+## Sprint 4 - Password Generator
+
+Sprint 4 concluída com geração profissional de senhas, comprimentos entre 8 e 64 caracteres, grupos configuráveis, exclusão de ambíguos, medidor de força e entropia estimada.
+
+Endpoint:
+
+- `POST /api/tools/password`
+
+Resposta:
+
+- `password`: senha gerada.
+- `strength`: classificação de força.
+- `entropy`: entropia estimada em bits.
+
 ## Sprint 3 - UUID Generator
 
 Sprint 3 concluída com o UUID Generator completo e os componentes compartilhados `ToolStatusCard` e `ToolMetadataCard`, reutilizados também pelo JSON Formatter e Base64 Toolkit.

@@ -85,17 +85,16 @@ def uuid_generate(
 
 
 @app.post("/api/tools/password")
-def password_generate(payload: PasswordPayload) -> dict[str, str]:
+def password_generate(payload: PasswordPayload) -> dict[str, str | float]:
     try:
-        return {
-            "password": generate_password(
-                length=payload.length,
-                include_uppercase=payload.include_uppercase,
-                include_lowercase=payload.include_lowercase,
-                include_numbers=payload.include_numbers,
-                include_symbols=payload.include_symbols,
-            )
-        }
+        return generate_password(
+            length=payload.length,
+            uppercase=payload.uppercase,
+            lowercase=payload.lowercase,
+            numbers=payload.numbers,
+            symbols=payload.symbols,
+            exclude_ambiguous=payload.exclude_ambiguous,
+        )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 

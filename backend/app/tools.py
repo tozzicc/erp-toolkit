@@ -1,5 +1,6 @@
 import base64
 import json
+import math
 import re
 import secrets
 import string
@@ -23,6 +24,9 @@ SQL_KEYWORDS = [
     "VALUES",
     "SET",
 ]
+
+AMBIGUOUS_CHARACTERS = frozenset("0Oo1lI5S8B6G")
+PASSWORD_SYMBOLS = "!@#$%^&*()-_=+[]{};:,.?/|"
 
 
 def format_json(text: str, indent: int = 2, sort_keys: bool = True, mode: str = "format") -> str:
@@ -62,30 +66,51 @@ def generate_uuids(count: int) -> list[str]:
 
 def generate_password(
     length: int,
-    include_uppercase: bool,
-    include_lowercase: bool,
-    include_numbers: bool,
-    include_symbols: bool,
-) -> str:
-    groups = []
-    if include_uppercase:
+    uppercase: bool,
+    lowercase: bool,
+    numbers: bool,
+    symbols: bool,
+    exclude_ambiguous: bool,
+) -> dict[str, str | float]:
+    groups: list[str] = []
+    if uppercase:
         groups.append(string.ascii_uppercase)
-    if include_lowercase:
+    if lowercase:
         groups.append(string.ascii_lowercase)
-    if include_numbers:
+    if numbers:
         groups.append(string.digits)
-    if include_symbols:
-        groups.append("!@#$%^&*()-_=+[]{};:,.?/|")
+    if symbols:
+        groups.append(PASSWORD_SYMBOLS)
 
     if not groups:
-        raise ValueError("At least one character group must be selected.")
+        raise ValueError("Selecione pelo menos um grupo de caracteres.")
+
+    if exclude_ambiguous:
+        groups = ["".join(character for character in group if character not in AMBIGUOUS_CHARACTERS) for group in groups]
 
     alphabet = "".join(groups)
     required = [secrets.choice(group) for group in groups]
     remaining = [secrets.choice(alphabet) for _ in range(length - len(required))]
     password_chars = required + remaining
     secrets.SystemRandom().shuffle(password_chars)
-    return "".join(password_chars)
+    entropy = round(length * math.log2(len(alphabet)), 2)
+
+    if entropy < 28:
+        strength = "Muito fraca"
+    elif entropy < 36:
+        strength = "Fraca"
+    elif entropy < 60:
+        strength = "Média"
+    elif entropy < 80:
+        strength = "Forte"
+    else:
+        strength = "Muito forte"
+
+    return {
+        "password": "".join(password_chars),
+        "strength": strength,
+        "entropy": entropy,
+    }
 
 
 def format_sql(sql: str) -> str:

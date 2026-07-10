@@ -15,11 +15,12 @@ class JsonFormatPayload(BaseModel):
 
 
 class PasswordPayload(BaseModel):
-    length: int = Field(default=16, ge=4, le=128)
-    include_uppercase: bool = True
-    include_lowercase: bool = True
-    include_numbers: bool = True
-    include_symbols: bool = True
+    length: Literal[8, 12, 16, 20, 24, 32, 48, 64] = 16
+    uppercase: bool = True
+    lowercase: bool = True
+    numbers: bool = True
+    symbols: bool = True
+    exclude_ambiguous: bool = Field(default=False, alias="excludeAmbiguous")
 
 
 class SqlFormatPayload(BaseModel):
