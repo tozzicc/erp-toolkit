@@ -1,5 +1,9 @@
 # Arquitetura
 
+## Base64 Toolkit
+
+O Base64 Toolkit segue o padrão de página do JSON Formatter e reutiliza `ActionButton`, `CopyToast`, `TextAreaField`, `ToolPanel`, `PageHeader`, `PrimaryButton` e `ErrorMessage`. O backend converte explicitamente entre texto UTF-8 e bytes nos endpoints dedicados de encode e decode.
+
 ## Visão Geral
 
 O ERP Toolkit utiliza uma arquitetura com frontend e backend separados. Essa separação permite evoluir a interface, a API e as ferramentas de forma independente, mantendo responsabilidades claras.

@@ -1,5 +1,20 @@
 # Roadmap
 
+## Sprint 2 - Base64 Toolkit
+
+Status: concluída.
+
+Entregas:
+
+- Encode e decode via API.
+- Suporte completo a UTF-8 e caracteres especiais.
+- Copiar, limpar e trocar entrada/resultado.
+- Estados visuais e metadados consistentes com o JSON Formatter.
+- Componentes de ação e toast compartilhados.
+- Testes unitários do processamento Base64.
+
+> O planejamento anterior da Sprint 2 permanece abaixo apenas como registro histórico e foi substituído por este escopo.
+
 ## Sprint 0 - Fundação do Projeto
 
 Status: concluída.

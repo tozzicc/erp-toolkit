@@ -1,5 +1,9 @@
 # ERP Toolkit
 
+## Atualização da Sprint 2
+
+Sprint 2 concluída com o Base64 Toolkit no padrão do JSON Formatter. A ferramenta oferece encode, decode, copiar, limpar, trocar entrada/resultado e suporte completo a UTF-8. UUID Generator, Password Generator e SQL Formatter permanecem em versão inicial.
+
 Este documento é a fonte oficial de contexto consolidado para IAs e desenvolvedores que trabalham no ERP Toolkit.
 
 Para evitar divergência, o conteúdo operacional de contexto é mantido em:

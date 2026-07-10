@@ -1,5 +1,9 @@
 # ERP Toolkit
 
+## Sprint 2 - Base64 Toolkit
+
+Sprint 2 concluída com encode, decode, cópia, limpeza, troca entre entrada e resultado, estados visuais e suporte completo a UTF-8. A API expõe `POST /api/tools/base64/encode` e `POST /api/tools/base64/decode`. UUID Generator, Password Generator e SQL Formatter permanecem em versão inicial.
+
 ERP Toolkit é um conjunto de ferramentas para apoiar rotinas técnicas de ERP, com frontend em React e backend em FastAPI.
 
 ## Estrutura

@@ -1,5 +1,36 @@
 # Sprint Atual
 
+## Sprint 2 - Base64 Toolkit
+
+Data de conclusão: 10/07/2026.
+
+Critérios de aceite atendidos:
+
+- Encode e decode processados pelo backend por endpoints independentes.
+- Entrada e saída preservam integralmente conteúdo UTF-8.
+- Copiar, limpar e trocar entrada/resultado funcionam conforme o contexto.
+- Ações ficam desabilitadas sem entrada, sem resultado ou durante processamento.
+- Erros de Base64 inválido removem resultados antigos e exibem feedback claro.
+- O JSON Formatter mantém seu comportamento após a extração dos componentes compartilhados.
+
+Próxima sprint recomendada: Sprint 3 - Qualidade e Testes, com testes de integração, testes de frontend, validação de contratos e revisão de acessibilidade.
+
+Status: concluída.
+
+Objetivo: implementar o Base64 Toolkit no padrão visual e arquitetural do JSON Formatter, sem regressões.
+
+Entregas concluídas:
+
+- Encode e decode pelos endpoints `POST /api/tools/base64/encode` e `POST /api/tools/base64/decode`.
+- Suporte a UTF-8, caracteres especiais, emojis e alfabetos não latinos.
+- Ações de copiar, limpar e trocar entrada/resultado.
+- Estados de loading, sucesso, erro e pendência, além de metadados e toast.
+- Componentes `ActionButton` e `CopyToast` compartilhados com o JSON Formatter.
+- Testes unitários de round-trip UTF-8 e rejeição de entrada inválida.
+- Build de produção validado sem regressões de TypeScript.
+
+---
+
 ## Sprint 1 - Consolidação do MVP Técnico
 
 Status: concluída.

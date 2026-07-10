@@ -1,5 +1,15 @@
 # Arquitetura
 
+## Base64 Toolkit e componentes compartilhados
+
+O frontend envia texto para endpoints separados de encode e decode. O backend converte explicitamente entre texto UTF-8 e bytes antes de aplicar Base64, preservando caracteres especiais, emojis e alfabetos não latinos.
+
+- `POST /api/tools/base64/encode`
+- `POST /api/tools/base64/decode`
+- `ActionButton`: ações secundárias e destrutivas compartilhadas.
+- `CopyToast`: confirmação temporária de cópia compartilhada.
+- `TextAreaField`, `ToolPanel`, `PageHeader`, `PrimaryButton` e `ErrorMessage`: estrutura visual comum.
+
 ## Visao geral
 
 O ERP Toolkit esta dividido em duas aplicacoes independentes:

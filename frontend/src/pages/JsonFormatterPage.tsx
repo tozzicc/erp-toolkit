@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
+import { ActionButton } from "../components/ActionButton";
+import { CopyToast } from "../components/CopyToast";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { PageHeader } from "../components/PageHeader";
 import { PrimaryButton } from "../components/PrimaryButton";
@@ -279,53 +281,30 @@ export function JsonFormatterPage() {
             Formatar JSON
           </PrimaryButton>
 
-          <button
-            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
-            disabled={!canRunAction}
-            onClick={() => processJson("minify")}
-            type="button"
-          >
+          <ActionButton disabled={!canRunAction} onClick={() => processJson("minify")}>
             <Minimize2 size={17} />
             Minificar
-          </button>
+          </ActionButton>
 
-          <button
-            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
-            disabled={!canRunAction}
-            onClick={() => processJson("validate")}
-            type="button"
-          >
+          <ActionButton disabled={!canRunAction} onClick={() => processJson("validate")}>
             <CheckCircle2 size={17} />
             Validar
-          </button>
+          </ActionButton>
 
-          <button
-            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
-            disabled={!output || isLoading}
-            onClick={copyOutput}
-            type="button"
-          >
+          <ActionButton disabled={!output || isLoading} onClick={copyOutput}>
             <Clipboard size={17} />
             Copiar
-          </button>
+          </ActionButton>
 
-          <button
-            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            onClick={loadSample}
-            type="button"
-          >
+          <ActionButton onClick={loadSample}>
             <RotateCcw size={17} />
             Exemplo
-          </button>
+          </ActionButton>
 
-          <button
-            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50"
-            onClick={clearAll}
-            type="button"
-          >
+          <ActionButton onClick={clearAll} variant="danger">
             <Trash2 size={17} />
             Limpar
-          </button>
+          </ActionButton>
         </div>
 
         <div className="mt-4 space-y-3">
@@ -338,14 +317,7 @@ export function JsonFormatterPage() {
         </div>
       </ToolPanel>
 
-      {toast ? (
-        <div
-          aria-live="polite"
-          className="fixed bottom-5 right-5 z-50 rounded-lg border border-brand-100 bg-white px-4 py-3 text-sm font-medium text-brand-700 shadow-soft"
-        >
-          {toast}
-        </div>
-      ) : null}
+      <CopyToast message={toast} />
     </>
   );
 }

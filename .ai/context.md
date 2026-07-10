@@ -1,5 +1,9 @@
 # ERP Toolkit
 
+## Estado após a Sprint 2
+
+O Base64 Toolkit está completo no frontend e backend, com encode, decode, copiar, limpar, trocar entrada/resultado, estados visuais padronizados e suporte a UTF-8. Seus endpoints são `POST /api/tools/base64/encode` e `POST /api/tools/base64/decode`. UUID Generator, Password Generator e SQL Formatter permanecem em versão inicial.
+
 ## Visão Geral
 
 O ERP Toolkit é uma plataforma de ferramentas para consultores, analistas e desenvolvedores de ERP, focada em aumentar produtividade e reduzir o tempo gasto em tarefas repetitivas.

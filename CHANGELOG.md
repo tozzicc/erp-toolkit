@@ -1,6 +1,20 @@
 # Changelog
 
+> Sprint 2 encerrada em 10/07/2026. Documentação, contexto técnico e validações foram atualizados junto com a entrega do Base64 Toolkit.
+
 ## Unreleased
+
+### Base64 Toolkit
+
+- Implementados encode e decode por endpoints dedicados da API.
+- Adicionadas ações de copiar, limpar e trocar entrada/resultado.
+- Adicionados status, metadados, mensagens e toast de cópia no padrão do JSON Formatter.
+- Garantido suporte a UTF-8, caracteres especiais, emoji e alfabetos não latinos.
+- Adicionados testes unitários de round-trip UTF-8 e rejeição de Base64 inválido.
+
+### Shared Components
+
+- Extraídos os botões de ação e o toast de cópia para componentes compartilhados entre JSON Formatter e Base64 Toolkit.
 
 ### UX Improvements
 

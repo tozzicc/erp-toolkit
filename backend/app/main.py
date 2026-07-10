@@ -74,7 +74,7 @@ def base64_decode(payload: TextPayload) -> dict[str, str]:
     try:
         return {"result": decode_base64(payload.text)}
     except (binascii.Error, UnicodeDecodeError) as exc:
-        raise HTTPException(status_code=400, detail="Invalid Base64 input.") from exc
+        raise HTTPException(status_code=400, detail="Base64 inválido ou conteúdo incompatível com UTF-8.") from exc
 
 
 @app.get("/api/tools/uuid")
