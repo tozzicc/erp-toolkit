@@ -1,13 +1,18 @@
 import base64
+import hashlib
 import json
 import math
 import re
 import secrets
 import string
 import uuid
+from time import perf_counter
 
 import sqlparse
 from sqlparse import tokens as sql_tokens
+
+from app.sql_dialects import SqlDialect, get_sql_dialect_rules
+from app.hash_algorithms import HashAlgorithm
 
 
 AMBIGUOUS_CHARACTERS = frozenset("0Oo1lI5S8B6G")
@@ -99,7 +104,50 @@ def generate_password(
     }
 
 
-def validate_sql(sql: str) -> None:
+def generate_hash(content: str, algorithm: HashAlgorithm, uppercase: bool = False) -> dict[str, object]:
+    started_at = perf_counter()
+    encoded_content = content.encode("utf-8")
+    digest = hashlib.new(algorithm.value, encoded_content).hexdigest()
+    if uppercase:
+        digest = digest.upper()
+    processing_time_ms = max(1, round((perf_counter() - started_at) * 1000))
+
+    return {
+        "hash": digest,
+        "algorithm": algorithm,
+        "uppercase": uppercase,
+        "input_characters": len(content),
+        "input_bytes": len(encoded_content),
+        "hash_characters": len(digest),
+        "processing_time_ms": processing_time_ms,
+    }
+
+
+def _sql_without_literals_or_comments(sql: str) -> str:
+    return re.sub(r"(?s)/\*.*?\*/|--[^\r\n]*|'(?:''|[^'])*'|\"(?:\"\"|[^\"])*\"", " ", sql)
+
+
+def _validate_sql_dialect(sql: str, dialect: SqlDialect) -> None:
+    if dialect == SqlDialect.ANSI:
+        return
+
+    rules = get_sql_dialect_rules(dialect)
+    comparable_sql = _sql_without_literals_or_comments(sql)
+    functions = {match.group(1).upper() for match in re.finditer(r"\b([A-Za-z_][\w$]*)\s*\(", comparable_sql)}
+    incompatible_functions = sorted(functions & rules.forbidden_functions)
+    if incompatible_functions:
+        function = incompatible_functions[0]
+        raise ValueError(f"{function}() não é uma função reconhecida no dialeto {rules.label}.")
+
+    if re.search(r"(?i)\bLIMIT\s+\d+\b", comparable_sql) and not rules.supports_limit:
+        raise ValueError(f"LIMIT não é compatível com {rules.label}.")
+    if re.search(r"(?i)\bSELECT\s+(?:DISTINCT\s+)?TOP(?:\s*\(\s*\d+\s*\)|\s+\d+)", comparable_sql) and not rules.supports_top:
+        raise ValueError(f"TOP não é compatível com {rules.label}.")
+    if re.search(r"(?i)\bFETCH\s+FIRST\s+\d+\s+ROWS?\s+ONLY\b", comparable_sql) and not rules.supports_fetch_first:
+        raise ValueError(f"FETCH FIRST não é compatível com {rules.label}.")
+
+
+def validate_sql(sql: str, dialect: SqlDialect = SqlDialect.SQLSERVER) -> None:
     stripped = sql.strip()
     if not stripped:
         raise ValueError("Informe um SQL para processar.")
@@ -130,6 +178,8 @@ def validate_sql(sql: str) -> None:
     if parentheses:
         raise ValueError("Parênteses não foram fechados corretamente.")
 
+    _validate_sql_dialect(stripped, dialect)
+
     statements = sqlparse.parse(stripped)
     keywords = [
         token.normalized.upper()
@@ -145,6 +195,10 @@ def validate_sql(sql: str) -> None:
         ]
         if "SELECT" not in statement_keywords or "FROM" in statement_keywords:
             continue
+
+        rules = get_sql_dialect_rules(dialect)
+        if rules.requires_from_dual:
+            raise ValueError("Em Oracle, esta consulta pode exigir a cláusula FROM DUAL.")
 
         compact_statement = sqlparse.format(statement.value, strip_whitespace=True).strip().rstrip(";")
         for select_part in re.split(rf"(?i)\b(?:{SQL_SET_OPERATOR_PATTERN})\b", compact_statement):
@@ -261,8 +315,9 @@ def format_sql(
     indent_join: bool = True,
     indent_case: bool = True,
     align_select: bool = True,
+    dialect: SqlDialect = SqlDialect.SQLSERVER,
 ) -> str:
-    validate_sql(sql)
+    validate_sql(sql, dialect=dialect)
     formatted = sqlparse.format(
         sql.strip(),
         keyword_case="upper" if keywords_uppercase else None,
@@ -287,8 +342,12 @@ def format_sql(
     return formatted
 
 
-def minify_sql(sql: str, keywords_uppercase: bool = True) -> str:
-    validate_sql(sql)
+def minify_sql(
+    sql: str,
+    keywords_uppercase: bool = True,
+    dialect: SqlDialect = SqlDialect.SQLSERVER,
+) -> str:
+    validate_sql(sql, dialect=dialect)
     return sqlparse.format(
         sql.strip(),
         keyword_case="upper" if keywords_uppercase else None,

@@ -5,12 +5,13 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import initialize_database
-from app.schemas import JsonFormatPayload, PasswordPayload, SqlFormatPayload, TextPayload
+from app.schemas import HashPayload, HashResponse, JsonFormatPayload, PasswordPayload, SqlFormatPayload, TextPayload
 from app.tools import (
     decode_base64,
     encode_base64,
     format_json,
     format_sql,
+    generate_hash,
     get_json_metadata,
     get_sql_metadata,
     generate_password,
@@ -102,15 +103,25 @@ def password_generate(payload: PasswordPayload) -> dict[str, str | float]:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+@app.post(
+    "/api/tools/hash",
+    response_model=HashResponse,
+    responses={422: {"description": "Payload inválido, conteúdo vazio ou algoritmo não suportado."}},
+)
+def hash_generate(payload: HashPayload) -> dict[str, object]:
+    return generate_hash(payload.content, payload.algorithm, payload.uppercase)
+
+
 @app.post("/api/tools/sql/format")
 def sql_format(payload: SqlFormatPayload) -> dict[str, object]:
     try:
         if payload.mode == "minify":
-            result = minify_sql(payload.sql, keywords_uppercase=payload.keywords_uppercase)
+            result = minify_sql(payload.sql, dialect=payload.dialect, keywords_uppercase=payload.keywords_uppercase)
         else:
-            validate_sql(payload.sql)
+            validate_sql(payload.sql, dialect=payload.dialect)
             result = format_sql(
                 payload.sql,
+                dialect=payload.dialect,
                 keywords_uppercase=payload.keywords_uppercase,
                 break_lines=payload.break_lines,
                 indent_join=payload.indent_join,

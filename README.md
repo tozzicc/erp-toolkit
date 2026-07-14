@@ -1,5 +1,50 @@
 # ERP Toolkit
 
+## Sprint 7 - Hash Generator
+
+Status: Em validação.
+
+O Hash Generator gera hashes MD5, SHA-1, SHA-256, SHA-384 e SHA-512 a partir de texto UTF-8, com saída em minúsculas ou maiúsculas. A ferramenta inclui cópia, limpeza, status, metadados e alertas sobre algoritmos legados.
+
+Endpoint:
+
+- `POST /api/tools/hash`
+
+Exemplo:
+
+```json
+{
+  "content": "ERP Toolkit",
+  "algorithm": "sha256",
+  "uppercase": false
+}
+```
+
+MD5 e SHA-1 permanecem disponíveis para integrações legadas, mas não são apresentados como opções seguras para aplicações criptográficas ou armazenamento de senhas.
+
+## Sprint 6 - SQL Multi-Dialeto
+
+Status: Em validação.
+
+O SQL Formatter agora permite selecionar SQL Server, PostgreSQL, MySQL, MariaDB, Oracle, SQLite ou Genérico / ANSI SQL. O backend aplica validações básicas compatíveis com o dialeto escolhido sem converter funções, nomes, aliases ou literais, e o Swagger documenta os valores aceitos e exemplos de uso.
+
+Exemplo:
+
+```json
+{
+  "sql": "SELECT GETDATE();",
+  "dialect": "sqlserver",
+  "mode": "format",
+  "keywords_uppercase": true,
+  "break_lines": true,
+  "indent_join": true,
+  "indent_case": true,
+  "align_select": true
+}
+```
+
+Endpoint: `POST /api/tools/sql/format`.
+
 ## Sprint 5.1 - Release Candidate
 
 Release Candidate concluída com refinamentos no SQL Formatter e compatibilidade total com as ferramentas existentes.

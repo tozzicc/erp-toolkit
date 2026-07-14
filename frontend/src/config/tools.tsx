@@ -3,6 +3,7 @@ import {
   ChartNoAxesCombined,
   Database,
   Fingerprint,
+  Hash,
   KeyRound,
   LucideIcon,
   LockKeyhole,
@@ -45,6 +46,12 @@ export const tools: ToolConfig[] = [
     description: "Crie senhas fortes para testes e rotinas internas.",
     path: "/password-generator",
     icon: KeyRound,
+  },
+  {
+    title: "Hash Generator",
+    description: "Gere hashes MD5, SHA-1, SHA-256, SHA-384 e SHA-512.",
+    path: "/hash-generator",
+    icon: Hash,
   },
   {
     title: "SQL Formatter",

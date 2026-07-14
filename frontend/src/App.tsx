@@ -3,6 +3,7 @@ import { AppLayout } from "./components/AppLayout";
 import { Base64Page } from "./pages/Base64Page";
 import { DashboardPage } from "./pages/DashboardPage";
 import { JsonFormatterPage } from "./pages/JsonFormatterPage";
+import { HashGeneratorPage } from "./pages/HashGeneratorPage";
 import { PasswordGeneratorPage } from "./pages/PasswordGeneratorPage";
 import { SqlFormatterPage } from "./pages/SqlFormatterPage";
 import { UuidGeneratorPage } from "./pages/UuidGeneratorPage";
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/base64" element={<Base64Page />} />
         <Route path="/uuid-generator" element={<UuidGeneratorPage />} />
         <Route path="/password-generator" element={<PasswordGeneratorPage />} />
+        <Route path="/hash-generator" element={<HashGeneratorPage />} />
         <Route path="/sql-formatter" element={<SqlFormatterPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

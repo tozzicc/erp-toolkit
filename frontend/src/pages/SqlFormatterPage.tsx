@@ -14,6 +14,7 @@ import { ToolStatusCard, type ToolStatusTone } from "../components/ToolStatusCar
 
 type SqlAction = "format" | "minify" | "validate";
 type SqlStatus = "idle" | "pending" | "loading" | "valid" | "invalid";
+type SqlDialect = "sqlserver" | "postgresql" | "mysql" | "mariadb" | "oracle" | "sqlite" | "ansi";
 
 type SqlMetadata = {
   bytes: number;
@@ -40,6 +41,16 @@ LEFT JOIN orders o ON o.customer_id = c.id
 WHERE c.id IN (SELECT customer_id FROM orders)
 ORDER BY c.name`;
 
+const sqlDialects: { label: string; value: SqlDialect }[] = [
+  { label: "SQL Server", value: "sqlserver" },
+  { label: "PostgreSQL", value: "postgresql" },
+  { label: "MySQL", value: "mysql" },
+  { label: "MariaDB", value: "mariadb" },
+  { label: "Oracle", value: "oracle" },
+  { label: "SQLite", value: "sqlite" },
+  { label: "Genérico / ANSI SQL", value: "ansi" },
+];
+
 const statusConfig = {
   idle: { label: "Aguardando SQL", tone: "idle" },
   pending: { label: "Alterações pendentes", tone: "pending" },
@@ -51,6 +62,7 @@ const statusConfig = {
 export function SqlFormatterPage() {
   const [input, setInput] = useState(sampleSql);
   const [output, setOutput] = useState("");
+  const [dialect, setDialect] = useState<SqlDialect>("sqlserver");
   const [keywordsUppercase, setKeywordsUppercase] = useState(true);
   const [breakLines, setBreakLines] = useState(true);
   const [indentJoin, setIndentJoin] = useState(true);
@@ -99,6 +111,7 @@ export function SqlFormatterPage() {
     try {
       const { data } = await api.post<SqlResponse>("/api/tools/sql/format", {
         sql: input,
+        dialect,
         mode: action,
         keywords_uppercase: keywordsUppercase,
         break_lines: breakLines,
@@ -157,6 +170,16 @@ export function SqlFormatterPage() {
     setHasProcessed(false);
   }
 
+  function changeDialect(value: SqlDialect) {
+    setDialect(value);
+    setOutput("");
+    setMetadata(null);
+    setError("");
+    setSuccess("");
+    setToast("");
+    setStatus("pending");
+  }
+
   const formatOptions = [
     { label: "Keywords em MAIÚSCULO", checked: keywordsUppercase, onChange: setKeywordsUppercase },
     { label: "Quebrar linhas", checked: breakLines, onChange: setBreakLines },
@@ -169,6 +192,24 @@ export function SqlFormatterPage() {
     <>
       <PageHeader title="SQL Formatter" description="Formate, minifique e valide consultas SQL usando a API local do ERP Toolkit." />
       <ToolPanel title="Formatador">
+        <div className="mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <label className="block text-sm font-medium text-slate-700" htmlFor="sql-dialect">
+            Banco de Dados
+          </label>
+          <select
+            className="mt-2 min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100 sm:max-w-xs"
+            disabled={isLoading}
+            id="sql-dialect"
+            onChange={(event) => changeDialect(event.target.value as SqlDialect)}
+            value={dialect}
+          >
+            {sqlDialects.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="mb-4 grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2 lg:grid-cols-5">
           {formatOptions.map((option) => (
             <label
@@ -194,7 +235,7 @@ export function SqlFormatterPage() {
           <ToolStatusCard label={currentStatus.label} status={currentStatus.tone} />
           <ToolMetadataCard>
             {metadata
-              ? `${metadata.lines} linhas, ${metadata.characters} caracteres, ${metadata.processingTimeMs} ms`
+              ? `${sqlDialects.find((option) => option.value === dialect)?.label} · ${metadata.lines} linhas · ${metadata.characters} caracteres · ${metadata.processingTimeMs} ms`
               : null}
           </ToolMetadataCard>
         </div>

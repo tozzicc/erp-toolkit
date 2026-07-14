@@ -1,5 +1,57 @@
 # Sprint Atual
 
+## Sprint 7 - Hash Generator
+
+Status: Em validação.
+
+Objetivo: implementar uma ferramenta para geração de hashes mantendo o padrão visual, arquitetural e de qualidade do ERP Toolkit.
+
+Entregas:
+
+- Hash Generator disponível no Dashboard, menu lateral e rota `/hash-generator`.
+- Algoritmos MD5, SHA-1, SHA-256, SHA-384 e SHA-512, com SHA-256 como padrão.
+- Entrada multilinha UTF-8 preservada integralmente e saída em minúsculas ou maiúsculas.
+- Ações de gerar, copiar e limpar, com estados idle, pending, loading, success e error.
+- Metadados de algoritmo, caracteres, bytes UTF-8, tamanho do hash e tempo de processamento.
+- Avisos informativos para algoritmos legados e armazenamento adequado de senhas.
+- Endpoint `POST /api/tools/hash` com enum centralizado, `hashlib` e contrato OpenAPI completo.
+- Reutilização de AppLayout, PageHeader, ToolPanel, ToolStatusCard, ToolMetadataCard, TextAreaField, PrimaryButton, ActionButton, CopyToast e ErrorMessage.
+
+Validações executadas:
+
+- 38 testes backend aprovados, incluindo regressão das ferramentas existentes.
+- ESLint, TypeScript e build Vite aprovados sem warnings.
+- Fluxos de geração, caixa da saída, cópia, limpeza e alteração de algoritmo aprovados no navegador.
+- Responsividade aprovada em 375 px sem overflow horizontal.
+
+---
+
+## Sprint 6 - SQL Multi-Dialeto
+
+Status: Em validação.
+
+Objetivo: evoluir a página atual do SQL Formatter para formatar, minificar e validar SQL conforme o banco selecionado, sem alterar as demais ferramentas.
+
+Entregas:
+
+- Seletor de Banco de Dados com SQL Server, PostgreSQL, MySQL, MariaDB, Oracle, SQLite e Genérico / ANSI SQL.
+- SQL Server como dialeto padrão e envio do valor nas três operações.
+- Enum e catálogo central de capacidades dos dialetos no backend.
+- Validações específicas com mensagens contextualizadas para funções e cláusulas incompatíveis.
+- Regra de `SELECT` sem `FROM` compatível com os dialetos e orientação de `FROM DUAL` para Oracle.
+- Dialeto incluído nos metadados, mantendo entrada e invalidando resultado ao trocar a seleção.
+- Swagger com enum explícito e exemplos para SQL Server, PostgreSQL e Oracle.
+- Cobertura automatizada dos sete dialetos, cenários cruzados e regressão do SQL Formatter.
+
+Validações executadas:
+
+- 31 testes backend aprovados.
+- ESLint aprovado.
+- TypeScript e build Vite aprovados.
+- JSON Formatter, Base64 Toolkit, UUID Generator e Password Generator preservados.
+
+---
+
 ## Sprint 5.1 - Release Candidate
 
 Status: concluída em 10/07/2026.

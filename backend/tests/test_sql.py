@@ -1,6 +1,7 @@
 import unittest
 
 from app.main import app
+from app.sql_dialects import SqlDialect
 from app.tools import format_sql, minify_sql, validate_sql
 
 
@@ -135,6 +136,50 @@ class SqlFormatterTests(unittest.TestCase):
         self.assertEqual(schema["properties"]["mode"]["enum"], ["format", "minify", "validate"])
         for property_name in ("keywords_uppercase", "break_lines", "indent_join", "indent_case", "align_select"):
             self.assertIn(property_name, schema["properties"])
+
+        dialect_schema = app.openapi()["components"]["schemas"]["SqlDialect"]
+        self.assertEqual(
+            dialect_schema["enum"],
+            ["sqlserver", "postgresql", "mysql", "mariadb", "oracle", "sqlite", "ansi"],
+        )
+        self.assertEqual(schema["properties"]["dialect"]["default"], "sqlserver")
+        self.assertEqual(len(schema["examples"]), 3)
+
+    def test_accepts_queries_supported_by_each_dialect(self) -> None:
+        queries = {
+            SqlDialect.SQLSERVER: ("SELECT GETDATE();", "SELECT TOP 10 * FROM SA1010;"),
+            SqlDialect.POSTGRESQL: ("SELECT NOW();", "SELECT * FROM clientes LIMIT 10;"),
+            SqlDialect.MYSQL: ("SELECT CURDATE();", "SELECT * FROM clientes LIMIT 10;"),
+            SqlDialect.MARIADB: ("SELECT NOW();", "SELECT * FROM clientes LIMIT 10;"),
+            SqlDialect.ORACLE: ("SELECT SYSDATE FROM DUAL;", "SELECT * FROM clientes FETCH FIRST 10 ROWS ONLY;"),
+            SqlDialect.SQLITE: ("SELECT DATE('now');", "SELECT * FROM clientes LIMIT 10;"),
+            SqlDialect.ANSI: ("SELECT CURRENT_DATE;", "SELECT * FROM clientes;"),
+        }
+
+        for dialect, dialect_queries in queries.items():
+            for sql in dialect_queries:
+                with self.subTest(dialect=dialect, sql=sql):
+                    validate_sql(sql, dialect=dialect)
+                    self.assertTrue(format_sql(sql, dialect=dialect))
+                    self.assertTrue(minify_sql(sql, dialect=dialect))
+
+    def test_rejects_cross_dialect_constructs_with_specific_messages(self) -> None:
+        invalid_queries = (
+            ("SELECT GETDATE();", SqlDialect.POSTGRESQL, "GETDATE.*PostgreSQL"),
+            ("SELECT * FROM clientes LIMIT 10;", SqlDialect.SQLSERVER, "LIMIT.*SQL Server"),
+            ("SELECT TOP 10 * FROM clientes;", SqlDialect.POSTGRESQL, "TOP.*PostgreSQL"),
+            ("SELECT 1;", SqlDialect.ORACLE, "FROM DUAL"),
+        )
+
+        for sql, dialect, message in invalid_queries:
+            with self.subTest(dialect=dialect, sql=sql), self.assertRaisesRegex(ValueError, message):
+                validate_sql(sql, dialect=dialect)
+
+    def test_dialect_validation_ignores_literals_and_comments(self) -> None:
+        validate_sql("SELECT 'GETDATE()' AS value; -- LIMIT 10", dialect=SqlDialect.POSTGRESQL)
+
+    def test_oracle_accepts_from_dual(self) -> None:
+        validate_sql("SELECT SYSTIMESTAMP FROM DUAL;", dialect=SqlDialect.ORACLE)
 
 
 if __name__ == "__main__":

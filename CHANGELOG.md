@@ -4,6 +4,30 @@
 
 ## Unreleased
 
+### Sprint 7 - Hash Generator (Em validação)
+
+- Adicionado Hash Generator ao Dashboard, menu lateral e rotas da aplicação.
+- Implementados MD5, SHA-1, SHA-256, SHA-384 e SHA-512, com SHA-256 como padrão.
+- Adicionada saída em letras minúsculas ou maiúsculas e suporte integral a conteúdo UTF-8.
+- Incluídos avisos de segurança para MD5, SHA-1 e armazenamento de senhas.
+- Reutilizados os componentes compartilhados de layout, entrada, status, metadados, ações, erros e toast.
+- Criado `POST /api/tools/hash` com enum centralizado e processamento por `hashlib`.
+- Atualizado o Swagger com payload, resposta, algoritmos permitidos, erros e exemplos.
+- Adicionados testes de hashes conhecidos, UTF-8, conteúdo grande, caixa da saída, validação e OpenAPI.
+- Aprovados 38 testes backend, lint, TypeScript, build Vite e regressão responsiva no navegador.
+
+### Sprint 6 - SQL Multi-Dialeto (Em validação)
+
+- Adicionado seletor de banco de dados ao SQL Formatter com SQL Server como padrão.
+- Adicionados SQL Server, PostgreSQL, MySQL, MariaDB, Oracle, SQLite e Genérico / ANSI SQL ao contrato da API.
+- Centralizados enum, nomes e capacidades de cada dialeto no backend.
+- Implementadas validações básicas para funções, `LIMIT`, `TOP`, `FETCH FIRST` e uso de `FROM DUAL` em Oracle.
+- Preservadas formatação, minificação e estruturas existentes, sem conversão automática entre funções de bancos.
+- Incluído o dialeto nos metadados exibidos pela interface.
+- Atualizado o OpenAPI com enum e exemplos de SQL Server, PostgreSQL e Oracle.
+- Adicionados testes por dialeto, testes cruzados e regressão completa do backend.
+- Aprovados 31 testes backend, lint e build de produção do frontend.
+
 ### Sprint 5.1 - Release Candidate
 
 - Refinada a saída de CTEs para iniciar o `SELECT` principal em uma nova linha após o fechamento do `WITH`.
