@@ -2,12 +2,37 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from app.date_formats import DateFormat
 from app.hash_algorithms import HashAlgorithm
 from app.sql_dialects import SqlDialect
 
 
 class TextPayload(BaseModel):
     text: str = ""
+
+
+class DateConvertPayload(BaseModel):
+    value: str = Field(min_length=1, description="Data ou timestamp a converter.")
+    source_format: DateFormat
+    target_format: DateFormat
+
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "value": "10/07/2026 14:30",
+                "source_format": "dd/MM/yyyy HH:mm",
+                "target_format": "ISO 8601",
+            }
+        }
+    }
+
+
+class DateConvertResponse(BaseModel):
+    result: str
+    source_format: DateFormat
+    target_format: DateFormat
+    input_characters: int
+    processing_time_ms: int
 
 
 class JsonFormatPayload(BaseModel):

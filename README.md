@@ -1,5 +1,25 @@
 # ERP Toolkit
 
+## Date Converter
+
+O Date Converter converte datas entre `dd/MM/yyyy`, `dd/MM/yyyy HH:mm`, ISO 8601, Unix Timestamp em segundos e `yyyy-MM-dd`. A validação é estrita e rejeita datas inexistentes e timestamps inválidos com mensagens amigáveis.
+
+Endpoint:
+
+- `POST /api/tools/date/convert`
+
+Exemplo:
+
+```json
+{
+  "value": "10/07/2026 14:30",
+  "source_format": "dd/MM/yyyy HH:mm",
+  "target_format": "ISO 8601"
+}
+```
+
+O timestamp é interpretado e produzido em UTC, em segundos, garantindo conversões determinísticas entre ambientes.
+
 ## Sprint 7 - Hash Generator
 
 Status: Em validação.

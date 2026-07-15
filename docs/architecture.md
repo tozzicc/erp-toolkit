@@ -1,5 +1,9 @@
 # Arquitetura
 
+## Date Converter
+
+O frontend do Date Converter gerencia os formatos, estados e ações seguindo o fluxo do Base64 Toolkit. As regras de parsing e formatação ficam no backend, no endpoint `POST /api/tools/date/convert`, com formatos enumerados e validação de calendário. Unix Timestamp usa segundos em UTC para manter resultados determinísticos.
+
 ## Cards de status e metadados
 
 As ferramentas maduras compartilham `ToolStatusCard` para estados tipados e `ToolMetadataCard` para informações flexíveis de processamento. O UUID Generator reutiliza esses cards junto de `ToolPanel`, `PageHeader`, `PrimaryButton`, `ActionButton` e `CopyToast`.

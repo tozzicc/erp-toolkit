@@ -1,6 +1,7 @@
 import {
   Braces,
   ChartNoAxesCombined,
+  CalendarSync,
   Database,
   Fingerprint,
   Hash,
@@ -40,6 +41,12 @@ export const tools: ToolConfig[] = [
     description: "Gere identificadores UUID v4.",
     path: "/uuid-generator",
     icon: Fingerprint,
+  },
+  {
+    title: "Date Converter",
+    description: "Converta datas para formatos de ERPs, bancos e APIs.",
+    path: "/date-converter",
+    icon: CalendarSync,
   },
   {
     title: "Password Generator",

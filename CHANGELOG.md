@@ -4,6 +4,15 @@
 
 ## Unreleased
 
+### Date Converter
+
+- Adicionado Date Converter ao Dashboard, menu lateral e rota `/date-converter`.
+- Implementadas conversões entre `dd/MM/yyyy`, `dd/MM/yyyy HH:mm`, ISO 8601, Unix Timestamp e `yyyy-MM-dd`.
+- Adicionadas validações estritas para datas inexistentes, formatos incompatíveis e timestamps inválidos.
+- Criado `POST /api/tools/date/convert` com contrato tipado e documentação OpenAPI.
+- Reutilizados os componentes compartilhados de layout, painéis, campos, status, metadados, ações, erros e toast.
+- Adicionados testes de conversão, validação, contrato e regressão do backend.
+
 ### Sprint 7 - Hash Generator (Em validação)
 
 - Adicionado Hash Generator ao Dashboard, menu lateral e rotas da aplicação.

@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./components/AppLayout";
 import { Base64Page } from "./pages/Base64Page";
 import { DashboardPage } from "./pages/DashboardPage";
+import { DateConverterPage } from "./pages/DateConverterPage";
 import { JsonFormatterPage } from "./pages/JsonFormatterPage";
 import { HashGeneratorPage } from "./pages/HashGeneratorPage";
 import { PasswordGeneratorPage } from "./pages/PasswordGeneratorPage";
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/json-formatter" element={<JsonFormatterPage />} />
         <Route path="/base64" element={<Base64Page />} />
+        <Route path="/date-converter" element={<DateConverterPage />} />
         <Route path="/uuid-generator" element={<UuidGeneratorPage />} />
         <Route path="/password-generator" element={<PasswordGeneratorPage />} />
         <Route path="/hash-generator" element={<HashGeneratorPage />} />

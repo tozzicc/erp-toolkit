@@ -1,5 +1,9 @@
 # Arquitetura
 
+## Date Converter
+
+O Date Converter reutiliza os componentes compartilhados das ferramentas maduras e chama `POST /api/tools/date/convert`. Parsing, validação de calendário e formatação ficam centralizados no backend; timestamps Unix são tratados em segundos UTC.
+
 ## Cards compartilhados das ferramentas
 
 - `ToolStatusCard`: apresenta status tipado nas variantes `idle`, `pending`, `success`, `error` e `loading`, com ícone opcional.

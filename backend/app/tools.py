@@ -6,6 +6,7 @@ import re
 import secrets
 import string
 import uuid
+from datetime import datetime, timezone
 from time import perf_counter
 
 import sqlparse
@@ -13,11 +14,51 @@ from sqlparse import tokens as sql_tokens
 
 from app.sql_dialects import SqlDialect, get_sql_dialect_rules
 from app.hash_algorithms import HashAlgorithm
+from app.date_formats import DateFormat
 
 
 AMBIGUOUS_CHARACTERS = frozenset("0Oo1lI5S8B6G")
 PASSWORD_SYMBOLS = "!@#$%^&*()-_=+[]{};:,.?/|"
 SQL_SET_OPERATOR_PATTERN = r"UNION(?:\s+ALL)?|INTERSECT|EXCEPT"
+
+DATE_FORMAT_PATTERNS = {
+    DateFormat.DATE_BR: "%d/%m/%Y",
+    DateFormat.DATETIME_BR: "%d/%m/%Y %H:%M",
+    DateFormat.ISO_8601: "%Y-%m-%dT%H:%M:%S",
+    DateFormat.DATE_ISO: "%Y-%m-%d",
+}
+
+
+def convert_date(value: str, source_format: DateFormat, target_format: DateFormat) -> dict[str, object]:
+    started_at = perf_counter()
+    normalized_value = value.strip()
+    if not normalized_value:
+        raise ValueError("Informe uma data para converter.")
+
+    try:
+        if source_format == DateFormat.UNIX_TIMESTAMP:
+            if not re.fullmatch(r"-?\d+", normalized_value):
+                raise ValueError("Timestamp Unix inválido. Informe um valor inteiro em segundos.")
+            parsed = datetime.fromtimestamp(int(normalized_value), tz=timezone.utc).replace(tzinfo=None)
+        else:
+            parsed = datetime.strptime(normalized_value, DATE_FORMAT_PATTERNS[source_format])
+    except (OverflowError, OSError, ValueError) as exc:
+        if isinstance(exc, ValueError) and str(exc).startswith("Timestamp Unix inválido"):
+            raise
+        raise ValueError("Data inválida para o formato de origem selecionado.") from exc
+
+    if target_format == DateFormat.UNIX_TIMESTAMP:
+        result = str(int(parsed.replace(tzinfo=timezone.utc).timestamp()))
+    else:
+        result = parsed.strftime(DATE_FORMAT_PATTERNS[target_format])
+
+    return {
+        "result": result,
+        "source_format": source_format,
+        "target_format": target_format,
+        "input_characters": len(value),
+        "processing_time_ms": max(1, round((perf_counter() - started_at) * 1000)),
+    }
 
 
 def format_json(text: str, indent: int = 2, sort_keys: bool = True, mode: str = "format") -> str:

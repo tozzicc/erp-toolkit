@@ -5,8 +5,9 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import initialize_database
-from app.schemas import HashPayload, HashResponse, JsonFormatPayload, PasswordPayload, SqlFormatPayload, TextPayload
+from app.schemas import DateConvertPayload, DateConvertResponse, HashPayload, HashResponse, JsonFormatPayload, PasswordPayload, SqlFormatPayload, TextPayload
 from app.tools import (
+    convert_date,
     decode_base64,
     encode_base64,
     format_json,
@@ -86,6 +87,14 @@ def uuid_generate(
     count: int = Query(default=1, ge=1, le=100, description="Quantidade de UUIDs v4 a gerar."),
 ) -> dict[str, list[str]]:
     return {"uuids": generate_uuids(count)}
+
+
+@app.post("/api/tools/date/convert", response_model=DateConvertResponse)
+def date_convert(payload: DateConvertPayload) -> dict[str, object]:
+    try:
+        return convert_date(payload.value, payload.source_format, payload.target_format)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @app.post("/api/tools/password")
