@@ -5,7 +5,7 @@
 
 ---
 
-# 🇺🇸 US English
+# 🇺🇸 English
 
 ## 📌 About the Project
 
